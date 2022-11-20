@@ -2,7 +2,6 @@
 
 ## Running mysql db locally
 
-
 ``` 
 docker run 
 --name mysqldb 
