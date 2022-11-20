@@ -1,6 +1,6 @@
 # Service for rectle
 
-## Running mysql db locally
+## Example of running mysql db locally
 
 ``` 
 docker run 

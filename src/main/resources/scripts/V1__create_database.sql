@@ -1,6 +1,6 @@
 use rectledb;
 
-CREATE TABLE User
+CREATE TABLE user
 (
     `id` INT NOT NULL AUTO_INCREMENT,
     `login` VARCHAR(100) NOT NULL,

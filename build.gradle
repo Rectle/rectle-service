@@ -44,6 +44,7 @@ dependencies {
     implementation "org.projectlombok:lombok:$lombokVersion"
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
     implementation "org.mapstruct:mapstruct:$mapStructVersion"
+    implementation "org.mapstruct:mapstruct-processor:$mapStructVersion"
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapStructVersion"
     testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
