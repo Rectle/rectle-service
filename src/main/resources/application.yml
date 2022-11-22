@@ -7,3 +7,6 @@ spring:
 
 api:
   url: ${API-URL}
+
+server:
+  port: ${PORT:8080}
