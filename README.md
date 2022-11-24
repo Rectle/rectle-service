@@ -5,7 +5,7 @@
 ``` 
 docker run 
 --name mysqldb 
--p 3308:3306 
+-p 3306:3306 
 -e MYSQL_ROOT_PASSWORD=root 
 -e MYSQL_DATABASE=rectledb 
 -e MYSQL_USER=user 
