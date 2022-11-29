@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.rectle'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 sourceCompatibility = '17'
 
 ext {
@@ -20,6 +20,7 @@ ext {
     jawaJwtVersion = '4.2.1'
     mysqlConnectorVersion = '8.0.31'
     springBootDataJpaVersion = '2.7.5'
+    flywayVersion = '9.8.2'
 }
 
 configurations {
@@ -40,6 +41,8 @@ dependencies {
     implementation "com.google.auth:google-auth-library-oauth2-http:$googleOauth2LibraryVersion"
     implementation "com.auth0:java-jwt:$jawaJwtVersion"
     implementation "mysql:mysql-connector-java:$mysqlConnectorVersion"
+    implementation "org.flywaydb:flyway-core:$flywayVersion"
+    implementation "org.flywaydb:flyway-mysql:$flywayVersion"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springBootDataJpaVersion"
     implementation "org.projectlombok:lombok:$lombokVersion"
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"

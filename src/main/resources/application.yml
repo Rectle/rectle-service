@@ -4,6 +4,11 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${DB-USERNAME}
     password: ${DB-PASSWORD}
+  flyway:
+    locations: "classpath:db/migration"
 
 api:
   url: ${API-URL}
+
+server:
+  port: ${PORT:8080}

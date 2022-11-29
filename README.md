@@ -5,7 +5,7 @@
 ``` 
 docker run 
 --name mysqldb 
--p 3308:3306 
+-p 3306:3306 
 -e MYSQL_ROOT_PASSWORD=root 
 -e MYSQL_DATABASE=rectledb 
 -e MYSQL_USER=user 
@@ -13,4 +13,13 @@ docker run
 -d mysql:8 
 ```
 
-## Deploy
+## Deploy (temporary)
+```
+docker build -t image .
+docker tag image eu.gcr.io/rectle-platform/rectle-container
+docker push eu.gcr.io/rectle-platform/rectle-container
+```
+### In case u need to authenticate use 
+* gcloud auth login 
+* gcloud auth configure-docker
+
