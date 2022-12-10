@@ -14,11 +14,6 @@ public class UserService {
 	private final UserRepository userRepository;
 
 	public User createUser(User user) {
-		userRepository.findUserByLogin(user.getLogin()).ifPresent(
-				u -> {
-					throw new BusinessException("Login " + u.getLogin() + " already exists", HttpStatus.CONFLICT);
-				}
-		);
 		userRepository.findUserByEmail(user.getEmail()).ifPresent(
 				u -> {
 					throw new BusinessException("Email " + u.getEmail() + " already exists", HttpStatus.CONFLICT);
