@@ -1,10 +1,21 @@
 spring:
   datasource:
-    url: ${DB-URL}
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${DB-USERNAME}
     password: ${DB-PASSWORD}
+  cloud:
+    gcp:
+      sql:
+        enabled: true
+        database-name: ${DB-NAME}
+        instance-connection-name: ${DB-INSTANCE}
+      logging:
+        enabled: true
+  sql:
+    init:
+      mode: always
   flyway:
+    enabled: true
     locations: "classpath:db/migration"
 
 api:

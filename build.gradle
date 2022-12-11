@@ -21,6 +21,8 @@ ext {
     mysqlConnectorVersion = '8.0.31'
     springBootDataJpaVersion = '2.7.5'
     flywayVersion = '9.8.2'
+    springGcpVersion = '3.4.0'
+    springCloudVersion = '3.1.5'
 }
 
 configurations {
@@ -44,11 +46,19 @@ dependencies {
     implementation "org.flywaydb:flyway-core:$flywayVersion"
     implementation "org.flywaydb:flyway-mysql:$flywayVersion"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springBootDataJpaVersion"
+
+    implementation "com.google.cloud:spring-cloud-gcp-starter-sql-mysql:${springGcpVersion}"
+    implementation "com.google.cloud:spring-cloud-gcp-starter-logging:${springGcpVersion}"
+    implementation "org.springframework.cloud:spring-cloud-context:${springCloudVersion}"
+    implementation "org.springframework.cloud:spring-cloud-starter-bootstrap:${springCloudVersion}"
+
     implementation "org.projectlombok:lombok:$lombokVersion"
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
     implementation "org.mapstruct:mapstruct:$mapStructVersion"
     implementation "org.mapstruct:mapstruct-processor:$mapStructVersion"
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapStructVersion"
+
     testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
