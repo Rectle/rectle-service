@@ -49,6 +49,8 @@ dependencies {
 
     implementation "com.google.cloud:spring-cloud-gcp-starter-sql-mysql:${springGcpVersion}"
     implementation "com.google.cloud:spring-cloud-gcp-starter-logging:${springGcpVersion}"
+    implementation "com.google.cloud:spring-cloud-gcp-starter-storage:${springGcpVersion}"
+    implementation "com.google.cloud:spring-cloud-gcp-dependencies:${springGcpVersion}"
     implementation "org.springframework.cloud:spring-cloud-context:${springCloudVersion}"
     implementation "org.springframework.cloud:spring-cloud-starter-bootstrap:${springCloudVersion}"
 

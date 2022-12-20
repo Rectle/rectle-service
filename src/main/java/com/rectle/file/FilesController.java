@@ -21,7 +21,7 @@ public class FilesController {
 	public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile multipartFile) {
 		if (!multipartFile.isEmpty() && multipartFile.getOriginalFilename() != null) {
 			String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-			filesService.saveFile(fileName, multipartFile);
+			filesService.uploadFileToCloudStorage(fileName, multipartFile);
 			return new ResponseEntity<>(FilesUtils.SUCCESSFULLY_UPLOADED_MSG, HttpStatus.CREATED);
 		}
 		return new ResponseEntity<>(FilesUtils.EMPTY_FILE_MSG, HttpStatus.BAD_REQUEST);

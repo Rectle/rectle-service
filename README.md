@@ -23,3 +23,7 @@ docker push eu.gcr.io/rectle-platform/rectle-container
 * gcloud auth login 
 * gcloud auth configure-docker
 
+## Running project locally
+Add environment variables like this:
+* GOOGLE_APPLICATION_CREDENTIALS='path to json credentials'
+

@@ -23,3 +23,7 @@ api:
 
 server:
   port: ${PORT:8080}
+
+bucket:
+  name: ${BUCKET-NAME}
+  folder: ${BUCKET-FOLDER}
