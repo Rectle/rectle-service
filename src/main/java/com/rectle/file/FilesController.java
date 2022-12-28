@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,5 +26,11 @@ public class FilesController {
 			return new ResponseEntity<>(FilesUtils.SUCCESSFULLY_UPLOADED_MSG, HttpStatus.CREATED);
 		}
 		return new ResponseEntity<>(FilesUtils.EMPTY_FILE_MSG, HttpStatus.BAD_REQUEST);
+	}
+
+	@PutMapping
+	public ResponseEntity<String> compileFile() {
+		filesService.requestForCompilingFile();
+		return new ResponseEntity<>(FilesUtils.SUCCESSFULLY_REQUESTED_FOR_COMPILE, HttpStatus.OK);
 	}
 }

@@ -22,6 +22,7 @@ import java.nio.file.StandardCopyOption;
 @Service
 public class FilesService {
 	private final Storage storage;
+	private final FilesFeignClient filesFeignClient;
 
 	@Value("${bucket.name}")
 	private String bucketName;
@@ -39,6 +40,10 @@ public class FilesService {
 			log.warn("There was a problem with converting file", e);
 			throw new RuntimeException("There was a problem with converting file", e);
 		}
+	}
+
+	public void requestForCompilingFile() {
+		filesFeignClient.postForCompileFile("project1.zip");
 	}
 
 	public void saveFile(String fileName, MultipartFile multipartFile) {
