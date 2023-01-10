@@ -27,3 +27,8 @@ server:
 bucket:
   name: ${BUCKET-NAME}
   folder: ${BUCKET-FOLDER}
+
+rectle:
+  tasks:
+    service:
+      url: ${RECTLE-TASKS-SERVICE-URL}
