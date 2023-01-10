@@ -31,4 +31,10 @@ public class UserService {
 				() -> new BusinessException("There is no user with id: " + id, HttpStatus.NOT_FOUND)
 		);
 	}
+
+	public User getUserByEmail(String email) {
+		return userRepository.findUserByEmail(email).orElseThrow(
+				() -> new BusinessException("There is no user with email: " + email, HttpStatus.NOT_FOUND)
+		);
+	}
 }
