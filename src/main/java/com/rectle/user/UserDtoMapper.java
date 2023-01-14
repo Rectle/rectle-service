@@ -1,5 +1,7 @@
 package com.rectle.user;
 
+import com.rectle.user.dto.ResponseCreateUserDto;
+import com.rectle.user.dto.UserDto;
 import com.rectle.user.model.User;
 import org.mapstruct.Mapper;
 
@@ -11,6 +13,8 @@ public interface UserDtoMapper {
 	UserDto userToUserDto(User user);
 
 	User userDtoToUser(UserDto userDto);
+
+	ResponseCreateUserDto userToResponseCreateUserDto(User user);
 
 	List<UserDto> usersToUsersDto(List<User> userList);
 }

@@ -1,6 +1,8 @@
 package com.rectle.user;
 
 import com.rectle.exception.BusinessException;
+import com.rectle.user.dto.ResponseCreateUserDto;
+import com.rectle.user.dto.UserDto;
 import com.rectle.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,9 +24,9 @@ public class UserController {
 	private final UserService userService;
 
 	@PostMapping
-	public ResponseEntity<User> createUser(@RequestBody UserDto userDto) {
+	public ResponseEntity<ResponseCreateUserDto> createUser(@RequestBody UserDto userDto) {
 		User user = userService.createUser(userDtoMapper.userDtoToUser(userDto));
-		return new ResponseEntity<>(user, HttpStatus.CREATED);
+		return new ResponseEntity<>(userDtoMapper.userToResponseCreateUserDto(user), HttpStatus.CREATED);
 	}
 
 	@GetMapping

@@ -1,12 +1,12 @@
-package com.rectle.user;
+package com.rectle.user.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
-public class UserDto {
+@Setter
+public class ResponseCreateUserDto {
+	private Long id;
 	private String provider;
-	private String password;
 	private String email;
 }
