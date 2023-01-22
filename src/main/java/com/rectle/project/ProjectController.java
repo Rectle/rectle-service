@@ -1,6 +1,7 @@
 package com.rectle.project;
 
 import com.rectle.file.FilesUtils;
+import com.rectle.project.model.Project;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,8 @@ public class ProjectController {
 
 	@PutMapping
 	public ResponseEntity<String> compileProject(@RequestParam("projectId") Long projectId) {
-		projectService.requestForCompilingProject(projectId);
+		Project project = projectService.findProjectById(projectId);
+		projectService.requestForCompilingProject(project.getId());
 		return new ResponseEntity<>(FilesUtils.SUCCESSFULLY_REQUESTED_FOR_COMPILE, HttpStatus.OK);
 	}
 }

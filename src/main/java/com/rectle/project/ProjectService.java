@@ -5,6 +5,7 @@ import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.rectle.exception.BusinessException;
 import com.rectle.file.FilesFeignClient;
+import com.rectle.project.dto.ProjectToCompileDto;
 import com.rectle.project.model.Project;
 import com.rectle.user.UserService;
 import com.rectle.user.model.User;
@@ -59,6 +60,12 @@ public class ProjectService {
 	}
 
 	public void requestForCompilingProject(Long projectId) {
-		filesFeignClient.postForCompileFile(projectId.toString());
+		filesFeignClient.postForCompileFile(new ProjectToCompileDto(projectId.toString()));
+	}
+
+	public Project findProjectById(Long projectId) {
+		return projectRepository.findById(projectId).orElseThrow(
+				() -> new BusinessException("Project with id: " + projectId + " not found", HttpStatus.NOT_FOUND)
+		);
 	}
 }

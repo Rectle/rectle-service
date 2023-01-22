@@ -1,4 +1,4 @@
-package com.rectle.project;
+package com.rectle.project.dto;
 
 import com.rectle.model.ModelDto;
 import com.rectle.score.ScoreDto;
