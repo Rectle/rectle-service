@@ -40,7 +40,7 @@ public class ProjectService {
 		return projectRepository.save(project);
 	}
 
-	public void uploadProjectToCloudStorage(String fileName, Long userId, MultipartFile multipartFile) {
+	public Project uploadProjectToCloudStorage(String fileName, Long userId, MultipartFile multipartFile) {
 		User user = userService.getUserById(userId);
 		Project project = Project.builder()
 				.user(user)
@@ -53,6 +53,7 @@ public class ProjectService {
 		try {
 			byte[] data = multipartFile.getBytes();
 			storage.create(blobInfo, data);
+			return project;
 		} catch (IOException e) {
 			log.warn("There was a problem with converting file", e);
 			throw new RuntimeException("There was a problem with converting file", e);
