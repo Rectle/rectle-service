@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.TokenVerifier;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,7 +32,10 @@ public class TokenFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
+        if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
+            throw new BadCredentialsException("Authorization token is not present");
+        }
         try {
             verifyToken(request.getHeader(HttpHeaders.AUTHORIZATION));
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = getUserAuthentication(request);
