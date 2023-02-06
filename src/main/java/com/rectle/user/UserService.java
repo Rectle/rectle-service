@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -14,12 +15,8 @@ public class UserService {
 	private final UserRepository userRepository;
 
 	public User createUser(User user) {
-		userRepository.findUserByEmail(user.getEmail()).ifPresent(
-				u -> {
-					throw new BusinessException("Email " + u.getEmail() + " already exists", HttpStatus.CONFLICT);
-				}
-		);
-		return userRepository.save(user);
+		Optional<User> alreadyCreatedUser = userRepository.findUserByEmail(user.getEmail());
+		return alreadyCreatedUser.orElseGet(() -> userRepository.save(user));
 	}
 
 	public List<User> getAllUsers() {
