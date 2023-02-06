@@ -49,7 +49,7 @@ public class ProjectService {
 		project = createNewProject(project);
 
 		BlobId blobId = BlobId.of(bucketName, bucketFolder + "/" + project.getId());
-		BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
+		BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("application/x-zip-compressed").build();
 		try {
 			byte[] data = multipartFile.getBytes();
 			storage.create(blobInfo, data);
