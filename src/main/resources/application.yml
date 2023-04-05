@@ -24,6 +24,11 @@ api:
 server:
   port: ${PORT:8080}
 
+socket:
+  server:
+    port: ${SOCKET-SERVER-PORT}
+    host: ${SOCKET-SERVER-HOST}
+
 bucket:
   name: ${BUCKET-NAME}
   folder: ${BUCKET-FOLDER}

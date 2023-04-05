@@ -3,6 +3,8 @@ package com.rectle.project;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
+import com.rectle.compilation.CompilationService;
+import com.rectle.compilation.model.Compilation;
 import com.rectle.exception.BusinessException;
 import com.rectle.file.FilesFeignClient;
 import com.rectle.project.dto.ProjectToCompileDto;
@@ -26,6 +28,7 @@ public class ProjectService {
 	private final UserService userService;
 	private final Storage storage;
 	private final FilesFeignClient filesFeignClient;
+	private final CompilationService compilationService;
 
 	@Value("${bucket.name}")
 	private String bucketName;
@@ -60,8 +63,16 @@ public class ProjectService {
 		}
 	}
 
-	public void requestForCompilingProject(Long projectId) {
-		filesFeignClient.postForCompileFile(new ProjectToCompileDto(projectId.toString()));
+	public String requestForCompilingProject(Project project) {
+		Compilation compilation = compilationService.createCompilationByProject(project);
+
+		ProjectToCompileDto projectToCompileDto = ProjectToCompileDto.builder()
+				.compilationId(compilation.getId().toString())
+				.task(project.getId().toString())
+				.build();
+		filesFeignClient.postForCompileFile(projectToCompileDto);
+
+		return compilation.getId().toString();
 	}
 
 	public Project findProjectById(Long projectId) {
