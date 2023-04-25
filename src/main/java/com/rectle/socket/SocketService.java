@@ -11,15 +11,22 @@ import java.util.List;
 @Slf4j
 public class SocketService {
 
-	public void sendMessage(String room, String eventName, SocketIOClient senderClient, List<String> messages) {
+	public void sendMessage(String room, String eventName, SocketIOClient senderClient, MessageDto messageDto) {
 		for (SocketIOClient client : senderClient.getNamespace().getRoomOperations(room).getClients()) {
 			if (!client.getSessionId().equals(senderClient.getSessionId())) {
-				client.sendEvent(eventName, new MessageDto(MessageDto.MessageType.SERVER, messages));
+				client.sendEvent(eventName, messageDto);
 			}
 		}
 	}
 
-	public void sendMessageToSpecificClient(String eventName, SocketIOClient client, List<String> messages) {
-		client.sendEvent(eventName, new MessageDto(MessageDto.MessageType.SERVER, messages));
+	public void sendMessageToSpecificClient(String eventName, SocketIOClient client, MessageDto messageDto) {
+		client.sendEvent(eventName, messageDto);
+	}
+
+	public boolean isRangeValid(Integer from, Integer to) {
+		if (from == null || to == null) {
+			return false;
+		}
+		return from > 0 && to > 0 && to - from <= 50 && from < to;
 	}
 }
