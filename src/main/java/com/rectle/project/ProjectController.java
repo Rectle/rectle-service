@@ -39,7 +39,7 @@ public class ProjectController {
 	@PutMapping("/{projectId}")
 	public ResponseEntity<String> compileProject(@PathVariable("projectId") Long projectId) {
 		Project project = projectService.findProjectById(projectId);
-		projectService.requestForCompilingProject(project.getId());
-		return new ResponseEntity<>(FilesUtils.SUCCESSFULLY_REQUESTED_FOR_COMPILE, HttpStatus.OK);
+		String compilationId = projectService.requestForCompilingProject(project);
+		return new ResponseEntity<>(compilationId, HttpStatus.OK);
 	}
 }
