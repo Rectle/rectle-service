@@ -1,16 +1,14 @@
 package com.rectle.project;
 
 import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.BlobInfo;
-import com.google.cloud.storage.Storage;
 import com.rectle.compilation.CompilationService;
 import com.rectle.compilation.model.Compilation;
 import com.rectle.exception.BusinessException;
-import com.rectle.file.FilesFeignClient;
+import com.rectle.file.FilesService;
 import com.rectle.project.dto.ProjectToCompileDto;
 import com.rectle.project.model.Project;
-import com.rectle.user.UserService;
-import com.rectle.user.model.User;
+import com.rectle.team.TeamService;
+import com.rectle.team.model.Team;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,17 +16,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 @RequiredArgsConstructor
 @Slf4j
 @Service
 public class ProjectService {
 	private final ProjectRepository projectRepository;
-	private final UserService userService;
-	private final Storage storage;
-	private final FilesFeignClient filesFeignClient;
 	private final CompilationService compilationService;
+	private final TeamService teamService;
+	private final FilesService filesService;
 
 	@Value("${bucket.name}")
 	private String bucketName;
@@ -37,43 +32,37 @@ public class ProjectService {
 	private String bucketFolder;
 
 	public Project createNewProject(Project project) {
-		projectRepository.findProjectByNameAndUser(project.getName(), project.getUser()).ifPresent(p -> {
-			throw new BusinessException("Project with name: " + p.getName() + " already exists for user: " + p.getUser().getId(), HttpStatus.CONFLICT);
+		projectRepository.findProjectByNameAndTeam(project.getName(), project.getTeam()).ifPresent(p -> {
+			throw new BusinessException("Project with name: " + p.getName() + " already exists for team: " + p.getTeam().getName(),
+					HttpStatus.CONFLICT);
 		});
 		return projectRepository.save(project);
 	}
 
-	public Project uploadProjectToCloudStorage(String fileName, Long userId, MultipartFile multipartFile) {
-		User user = userService.getUserById(userId);
+	public Project uploadProjectToCloudStorage(String fileName, Long teamId, MultipartFile multipartFile) {
+		Team team = teamService.getTeamById(teamId);
 		Project project = Project.builder()
-				.user(user)
 				.name(fileName)
+				.team(team)
 				.build();
 		project = createNewProject(project);
 
 		BlobId blobId = BlobId.of(bucketName, bucketFolder + "/" + project.getId());
-		BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("application/x-zip-compressed").build();
-		try {
-			byte[] data = multipartFile.getBytes();
-			storage.create(blobInfo, data);
-			return project;
-		} catch (IOException e) {
-			log.warn("There was a problem with converting file", e);
-			throw new RuntimeException("There was a problem with converting file", e);
-		}
+		filesService.uploadZipFileToStorage(blobId, multipartFile);
+		return project;
 	}
 
-	public String requestForCompilingProject(Project project) {
-		Compilation compilation = compilationService.createCompilationByProject(project);
-
-		ProjectToCompileDto projectToCompileDto = ProjectToCompileDto.builder()
-				.compilationId(compilation.getId().toString())
-				.task(project.getId().toString())
-				.build();
-		filesFeignClient.postForCompileFile(projectToCompileDto);
-
-		return compilation.getId().toString();
-	}
+//	public String requestForCompilingProject(Project project) {
+//		//Compilation compilation = compilationService.createCompilationByProject(project);
+//
+//		ProjectToCompileDto projectToCompileDto = ProjectToCompileDto.builder()
+//				//.compilationId(compilation.getId().toString())
+//				.task(project.getId().toString())
+//				.build();
+//		filesService.compileProject(projectToCompileDto);
+//
+//		return compilation.getId().toString();
+//	}
 
 	public Project findProjectById(Long projectId) {
 		return projectRepository.findById(projectId).orElseThrow(

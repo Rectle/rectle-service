@@ -33,6 +33,11 @@ bucket:
   name: ${BUCKET-NAME}
   folder: ${BUCKET-FOLDER}
 
+model:
+  bucket:
+    name: ${MODEL-BUCKET-NAME}
+    folder: ${MODEL-BUCKET-FOLDER}
+
 rectle:
   tasks:
     service:

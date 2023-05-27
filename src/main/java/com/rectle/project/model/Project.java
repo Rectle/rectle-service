@@ -1,8 +1,7 @@
 package com.rectle.project.model;
 
-import com.rectle.model.model.Model;
-import com.rectle.score.model.Score;
-import com.rectle.user.model.User;
+import com.rectle.model.entity.Model;
+import com.rectle.team.model.Team;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -42,12 +41,9 @@ public class Project {
 	private String name;
 
 	@ManyToOne
-	@JoinColumn(name = "user_id", nullable = false)
-	private User user;
+	@JoinColumn(name = "team_id", nullable = false)
+	private Team team;
 
 	@OneToMany(mappedBy = "project")
 	private Set<Model> models = new HashSet<>();
-
-	@OneToMany(mappedBy = "project")
-	private Set<Score> scores = new HashSet<>();
 }

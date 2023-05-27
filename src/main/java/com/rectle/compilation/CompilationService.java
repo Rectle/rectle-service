@@ -3,6 +3,7 @@ package com.rectle.compilation;
 import com.rectle.compilation.model.Compilation;
 import com.rectle.compilation.model.Log;
 import com.rectle.exception.BusinessException;
+import com.rectle.model.entity.Model;
 import com.rectle.project.model.Project;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,10 +18,9 @@ public class CompilationService {
 	private final CompilationRepository compilationRepository;
 	private final LogRepository logRepository;
 
-	public Compilation createCompilationByProject(Project project) {
+	public Compilation createCompilationByModel(Model model) {
 		Compilation compilation = Compilation.builder()
-				.project(project)
-				.user(project.getUser())
+				.model(model)
 				.build();
 		return compilationRepository.save(compilation);
 	}
