@@ -31,7 +31,7 @@ public class CompilationController {
 	@GetMapping("/{compilationId}/runner")
 	public ResponseEntity<String> getRunnerUrl(@PathVariable Long compilationId) {
 		String runner = compilationService.getRunnerUrlByCompilationId(compilationId);
-		if(runner == null) {
+		if(runner == null || runner.equals("")) {
 			return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
 		}
 		return new ResponseEntity<>(runner, HttpStatus.OK);
