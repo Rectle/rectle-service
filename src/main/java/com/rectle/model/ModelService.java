@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.text.MessageFormat;
+import java.util.HashSet;
 
 @Service
 @Slf4j
@@ -50,6 +51,7 @@ public class ModelService {
 				.name(createModelDto.getName())
 				.user(user)
 				.project(project)
+				.compilations(new HashSet<>())
 				.build();
 		return modelRepository.save(model);
 	}

@@ -2,6 +2,7 @@ package com.rectle.compilation;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,9 +10,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,10 +46,13 @@ public class CompilationController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@PutMapping("/{compilationId}/runner")
-	public ResponseEntity<Void> addRunnerUrl(@PathVariable Long compilationId, @RequestParam String url) {
+	@PutMapping(path = "/{compilationId}/runner", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	public Flux<String> addRunnerUrl(@PathVariable Long compilationId, @RequestParam String url) {
 		compilationService.addRunnerUrl(url, compilationId);
-		return new ResponseEntity<>(HttpStatus.OK);
+		Stream<String> stream = Stream.<String>builder()
+				.add(url)
+				.build();
+		return Flux.fromStream(stream).retry(2);
 	}
 
 }

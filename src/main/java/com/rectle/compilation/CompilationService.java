@@ -21,6 +21,7 @@ public class CompilationService {
 	public Compilation createCompilationByModel(Model model) {
 		Compilation compilation = Compilation.builder()
 				.model(model)
+				.score("")
 				.build();
 		return compilationRepository.save(compilation);
 	}

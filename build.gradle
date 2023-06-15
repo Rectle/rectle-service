@@ -41,6 +41,8 @@ repositories {
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-starter-security:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-webflux:$springBootVersion"
     implementation "org.springframework.security:spring-security-oauth2-client:$springSecurityVersion"
     implementation "com.google.oauth-client:google-oauth-client:$googleOauthClientVersion"
     implementation "com.google.auth:google-auth-library-oauth2-http:$googleOauth2LibraryVersion"
@@ -67,6 +69,7 @@ dependencies {
     implementation "org.mapstruct:mapstruct-processor:$mapStructVersion"
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapStructVersion"
 
+    testImplementation "io.projectreactor:reactor-test:$springBootVersion"
     testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"

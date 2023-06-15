@@ -50,6 +50,8 @@ public class Model {
 
 	@ManyToOne
 	@JoinColumn(name = "project_id", nullable = false)
+	@JsonIgnore
+	@ToString.Exclude
 	private Project project;
 
 	@OneToMany(mappedBy = "model")
