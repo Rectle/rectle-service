@@ -11,12 +11,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/${api.url}/compilations")
 public class CompilationController {
 	private final CompilationService compilationService;
+
+	@GetMapping("/{compilationId}/logs")
+	public ResponseEntity<List<String>> getLogs(@PathVariable Long compilationId) {
+		List<String> logs = compilationService.getLogsTextByCompilationId(compilationId);
+		if(logs == null || logs.isEmpty()) {
+			return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<>(logs, HttpStatus.OK);
+	}
 
 	@GetMapping("/{compilationId}/runner")
 	public ResponseEntity<String> getRunnerUrl(@PathVariable Long compilationId) {

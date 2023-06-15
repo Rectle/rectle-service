@@ -25,8 +25,8 @@ public class CompilationService {
 		return compilationRepository.save(compilation);
 	}
 
-	public List<String> getLogsTextByCompilationId(String compilationId) {
-		Compilation compilation = compilationRepository.findById(Long.parseLong(compilationId)).orElseThrow(
+	public List<String> getLogsTextByCompilationId(Long compilationId) {
+		Compilation compilation = compilationRepository.findById(compilationId).orElseThrow(
 				() -> new BusinessException("There is no compilation with ID: " + compilationId, HttpStatus.NOT_FOUND)
 		);
 
