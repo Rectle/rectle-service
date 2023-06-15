@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Column;
@@ -42,6 +43,8 @@ public class Project {
 
 	@ManyToOne
 	@JoinColumn(name = "team_id", nullable = false)
+	@JsonIgnore
+	@ToString.Exclude
 	private Team team;
 
 	@OneToMany(mappedBy = "project")

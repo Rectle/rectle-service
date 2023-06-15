@@ -30,9 +30,9 @@ public class FilesService {
 		}
 	}
 
-	public void compileProject(ProjectToCompileDto projectToCompileDto) {
-		filesFeignClient.postForCompileFile(projectToCompileDto);
-	}
+//	public void compileProject(ProjectToCompileDto projectToCompileDto) {
+//		filesFeignClient.postForCompileFile(projectToCompileDto);
+//	}
 
 	public void compileModel(ModelToCompileDto modelToCompileDto) {
 		filesFeignClient.postForCompileModel(modelToCompileDto);

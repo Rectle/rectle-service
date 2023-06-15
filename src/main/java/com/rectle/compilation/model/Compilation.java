@@ -41,6 +41,9 @@ public class Compilation {
 
 	private String score;
 
+	@Column(name = "runner_url")
+	private String runnerUrl;
+
 	@ManyToOne
 	@JoinColumn(name = "model_id", nullable = false)
 	private Model model;

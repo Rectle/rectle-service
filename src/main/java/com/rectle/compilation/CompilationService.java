@@ -30,12 +30,22 @@ public class CompilationService {
 				() -> new BusinessException("There is no compilation with ID: " + compilationId, HttpStatus.NOT_FOUND)
 		);
 
-		return compilation.getLogs().stream().map(Log::getText).toList();
+		return compilation.getLogs()
+				.stream()
+				.map(Log::getText)
+				.toList();
+	}
+
+	public String getRunnerUrlByCompilationId(Long compilationId) {
+		Compilation compilation = compilationRepository.findById(compilationId).orElseThrow(
+				() -> new BusinessException("There is no compilation with ID: " + compilationId, HttpStatus.NOT_FOUND)
+		);
+		return compilation.getRunnerUrl();
 	}
 
 	@Transactional
-	public void addNewLogs(List<String> messages, String compilationId) {
-		Compilation compilation = compilationRepository.findById(Long.parseLong(compilationId)).orElseThrow(
+	public void addNewLogs(List<String> messages, Long compilationId) {
+		Compilation compilation = compilationRepository.findById(compilationId).orElseThrow(
 				() -> new BusinessException("There is no compilation with ID: " + compilationId, HttpStatus.NOT_FOUND)
 		);
 		messages.forEach(message -> {
@@ -45,5 +55,13 @@ public class CompilationService {
 					.build();
 			logRepository.save(log);
 		});
+	}
+
+	public void addRunnerUrl(String runnerUrl, Long compilationId) {
+		Compilation compilation = compilationRepository.findById(compilationId).orElseThrow(
+				() -> new BusinessException("There is no compilation with ID: " + compilationId, HttpStatus.NOT_FOUND)
+		);
+		compilation.setRunnerUrl(runnerUrl);
+		compilationRepository.save(compilation);
 	}
 }

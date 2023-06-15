@@ -1,5 +1,6 @@
 package com.rectle.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rectle.compilation.model.Compilation;
 import com.rectle.project.model.Project;
 import com.rectle.user.model.User;
@@ -43,6 +44,8 @@ public class Model {
 
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
+	@JsonIgnore
+	@ToString.Exclude
 	private User user;
 
 	@ManyToOne

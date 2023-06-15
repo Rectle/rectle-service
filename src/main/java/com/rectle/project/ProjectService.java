@@ -2,10 +2,8 @@ package com.rectle.project;
 
 import com.google.cloud.storage.BlobId;
 import com.rectle.compilation.CompilationService;
-import com.rectle.compilation.model.Compilation;
 import com.rectle.exception.BusinessException;
 import com.rectle.file.FilesService;
-import com.rectle.project.dto.ProjectToCompileDto;
 import com.rectle.project.model.Project;
 import com.rectle.team.TeamService;
 import com.rectle.team.model.Team;
@@ -47,7 +45,7 @@ public class ProjectService {
 				.build();
 		project = createNewProject(project);
 
-		BlobId blobId = BlobId.of(bucketName, bucketFolder + "/" + project.getId());
+		BlobId blobId = BlobId.of(bucketName, bucketFolder + project.getId() + "/code");
 		filesService.uploadZipFileToStorage(blobId, multipartFile);
 		return project;
 	}

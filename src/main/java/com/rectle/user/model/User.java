@@ -1,5 +1,6 @@
 package com.rectle.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rectle.model.entity.Model;
 import com.rectle.team.model.Team;
 import lombok.Getter;
@@ -47,6 +48,8 @@ public class User {
 	private String email;
 
 	@OneToMany(mappedBy = "user")
+	@JsonIgnore
+	@ToString.Exclude
 	private Set<Model> models = new HashSet<>();
 
 	public void addTeam(Team team) {

@@ -1,0 +1,1 @@
+ALTER TABLE compilation ADD COLUMN `runner_url` VARCHAR(100);

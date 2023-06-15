@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class ModelToCompileDto {
-	private String task;
+	private String modelId;
+	private String projectId;
 	private String compilationId;
 }

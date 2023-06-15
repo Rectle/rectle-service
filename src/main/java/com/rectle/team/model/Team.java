@@ -46,5 +46,7 @@ public class Team {
 	private Set<User> users = new HashSet<>();
 
 	@OneToMany(mappedBy = "team")
+	@JsonIgnore
+	@ToString.Exclude
 	private Set<Project> projects = new HashSet<>();
 }

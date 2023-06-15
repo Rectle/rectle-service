@@ -1,6 +1,7 @@
 package com.rectle.team;
 
 import com.rectle.exception.BusinessException;
+import com.rectle.team.dto.CreateTeamDto;
 import com.rectle.team.model.Team;
 import com.rectle.user.UserService;
 import com.rectle.user.model.User;
@@ -28,6 +29,11 @@ public class TeamService {
 		return teamRepository.findById(id).orElseThrow(
 				() -> new BusinessException("There is no team with id: " + id, HttpStatus.NOT_FOUND)
 		);
+	}
+
+	public Set<Team> getAllTeamsByUserId(Long userId) {
+		User user = userService.getUserById(userId);
+		return user.getTeams();
 	}
 
 	public Set<User> getAllUsers(Long teamId) {

@@ -1,4 +1,4 @@
-package com.rectle.team;
+package com.rectle.team.dto;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -58,7 +58,8 @@ public class ModelService {
 		Model model = modelRepository.findById(modelId).orElseThrow(() -> new BusinessException(
 				"There is no model with id: " + modelId, HttpStatus.NOT_FOUND
 		));
-		BlobId blobId = BlobId.of(bucketName, bucketFolder + "/" + modelId);
+		String baseFolder = bucketFolder.replace("#", model.getProject().getId().toString());
+		BlobId blobId = BlobId.of(bucketName, baseFolder + modelId + "/model");
 		filesService.uploadZipFileToStorage(blobId, multipartFile);
 		return model;
 	}
@@ -70,7 +71,8 @@ public class ModelService {
 		Compilation compilation = compilationService.createCompilationByModel(model);
 		ModelToCompileDto modelToCompileDto = ModelToCompileDto.builder()
 				.compilationId(compilation.getId().toString())
-				.task(modelId.toString())
+				.projectId(model.getProject().getId().toString())
+				.modelId(modelId.toString())
 				.build();
 		filesService.compileModel(modelToCompileDto);
 		return compilation.getId();
