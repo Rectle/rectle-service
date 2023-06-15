@@ -26,6 +26,7 @@ ext {
     openFeignVersion = '11.7'
     springFeignVersion = '3.0.5'
     nettySocketIoVersion = '1.7.23'
+    projectReactorTest = '3.5.4'
 }
 
 configurations {
@@ -69,7 +70,7 @@ dependencies {
     implementation "org.mapstruct:mapstruct-processor:$mapStructVersion"
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapStructVersion"
 
-    testImplementation "io.projectreactor:reactor-test:$springBootVersion"
+    testImplementation "io.projectreactor:reactor-test:$projectReactorTest"
     testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
