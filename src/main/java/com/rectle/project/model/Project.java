@@ -1,13 +1,13 @@
 package com.rectle.project.model;
 
-import com.rectle.model.model.Model;
-import com.rectle.score.model.Score;
-import com.rectle.user.model.User;
+import com.rectle.model.entity.Model;
+import com.rectle.team.model.Team;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Column;
@@ -42,12 +42,13 @@ public class Project {
 	private String name;
 
 	@ManyToOne
-	@JoinColumn(name = "user_id", nullable = false)
-	private User user;
+	@JoinColumn(name = "team_id", nullable = false)
+	@JsonIgnore
+	@ToString.Exclude
+	private Team team;
 
 	@OneToMany(mappedBy = "project")
+	@JsonIgnore
+	@ToString.Exclude
 	private Set<Model> models = new HashSet<>();
-
-	@OneToMany(mappedBy = "project")
-	private Set<Score> scores = new HashSet<>();
 }

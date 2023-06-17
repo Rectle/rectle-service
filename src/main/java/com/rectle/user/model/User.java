@@ -1,17 +1,21 @@
 package com.rectle.user.model;
 
-import com.rectle.model.model.Model;
-import com.rectle.project.model.Project;
-import com.rectle.score.model.Score;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.rectle.model.entity.Model;
+import com.rectle.team.model.Team;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.HashSet;
@@ -29,6 +33,14 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+	@JoinTable(
+			name = "membership",
+			joinColumns = @JoinColumn(name = "user_id"),
+			inverseJoinColumns = @JoinColumn(name = "team_id"))
+	@ToString.Exclude
+	private Set<Team> teams = new HashSet<>();
+
 	private String provider;
 
 	private String password;
@@ -36,11 +48,17 @@ public class User {
 	private String email;
 
 	@OneToMany(mappedBy = "user")
-	private Set<Project> projects = new HashSet<>();
+	@JsonIgnore
+	@ToString.Exclude
+	private Set<Model> models = new HashSet<>();
 
-	@OneToMany(mappedBy = "user")
-	private Set<Model> models =  new HashSet<>();
+	public void addTeam(Team team) {
+		this.teams.add(team);
+		team.getUsers().add(this);
+	}
 
-	@OneToMany(mappedBy = "user")
-	private Set<Score> scores =  new HashSet<>();
+	public void removeTeam(Team team) {
+		this.teams.remove(team);
+		team.getUsers().remove(this);
+	}
 }

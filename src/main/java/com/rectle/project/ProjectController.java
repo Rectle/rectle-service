@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.websocket.server.PathParam;
+
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/${api.url}/projects")
@@ -24,11 +26,11 @@ public class ProjectController {
 	private final ProjectService projectService;
 	private final ProjectDtoMapper projectDtoMapper;
 
-	@PostMapping("/{userId}")
-	public ResponseEntity<UploadedProjectDto> uploadProject(@RequestParam("file") MultipartFile multipartFile, @PathVariable Long userId) {
+	@PostMapping("/{teamId}")
+	public ResponseEntity<UploadedProjectDto> uploadProject(@RequestParam("file") MultipartFile multipartFile, @PathVariable Long teamId) {
 		if (!multipartFile.isEmpty() && multipartFile.getOriginalFilename() != null) {
 			String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-			Project project = projectService.uploadProjectToCloudStorage(fileName, userId, multipartFile);
+			Project project = projectService.uploadProjectToCloudStorage(fileName, teamId, multipartFile);
 			log.info(FilesUtils.SUCCESSFULLY_UPLOADED_MSG);
 			return new ResponseEntity<>(projectDtoMapper.projectToUploadedProjectDto(project), HttpStatus.CREATED);
 		}
@@ -36,10 +38,10 @@ public class ProjectController {
 		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 	}
 
-	@PutMapping("/{projectId}")
-	public ResponseEntity<String> compileProject(@PathVariable("projectId") Long projectId) {
-		Project project = projectService.findProjectById(projectId);
-		String compilationId = projectService.requestForCompilingProject(project);
-		return new ResponseEntity<>(compilationId, HttpStatus.OK);
-	}
+//	@PutMapping("/{projectId}")
+//	public ResponseEntity<String> compileProject(@PathVariable("projectId") Long projectId) {
+//		Project project = projectService.findProjectById(projectId);
+//		String compilationId = projectService.requestForCompilingProject(project);
+//		return new ResponseEntity<>(compilationId, HttpStatus.OK);
+//	}
 }

@@ -1,13 +1,17 @@
-package com.rectle.model.model;
+package com.rectle.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.rectle.compilation.model.Compilation;
 import com.rectle.project.model.Project;
-import com.rectle.score.model.Score;
 import com.rectle.user.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,12 +20,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
 @Getter
 @Setter
 @ToString
+@SuperBuilder
 @NoArgsConstructor
 @Entity
 @Table(name = "model")
@@ -32,14 +38,22 @@ public class Model {
 
 	private String name;
 
-	@OneToMany(mappedBy = "model")
-	private Set<Score> scores = new HashSet<>();
+	@Column(name = "create_date")
+	@CreationTimestamp
+	private Timestamp createDate;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
+	@JsonIgnore
+	@ToString.Exclude
 	private User user;
 
 	@ManyToOne
 	@JoinColumn(name = "project_id", nullable = false)
+	@JsonIgnore
+	@ToString.Exclude
 	private Project project;
+
+	@OneToMany(mappedBy = "model")
+	private Set<Compilation> compilations = new HashSet<>();
 }

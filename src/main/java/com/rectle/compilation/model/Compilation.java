@@ -1,7 +1,6 @@
 package com.rectle.compilation.model;
 
-import com.rectle.project.model.Project;
-import com.rectle.user.model.User;
+import com.rectle.model.entity.Model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,13 +39,14 @@ public class Compilation {
 	@CreationTimestamp
 	private Timestamp createDate;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id", nullable = false)
-	private User user;
+	private String score;
+
+	@Column(name = "runner_url")
+	private String runnerUrl;
 
 	@ManyToOne
-	@JoinColumn(name = "project_id", nullable = false)
-	private Project project;
+	@JoinColumn(name = "model_id", nullable = false)
+	private Model model;
 
 	@OneToMany(mappedBy = "compilation", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Log> logs = new ArrayList<>();

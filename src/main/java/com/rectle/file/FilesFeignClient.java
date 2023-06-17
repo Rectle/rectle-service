@@ -1,6 +1,6 @@
 package com.rectle.file;
 
-import com.rectle.project.dto.ProjectToCompileDto;
+import com.rectle.model.dto.ModelToCompileDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -8,5 +8,5 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface FilesFeignClient {
 
 	@PostMapping
-	void postForCompileFile(ProjectToCompileDto projectToCompileDto);
+	void postForCompileModel(ModelToCompileDto modelToCompileDto);
 }

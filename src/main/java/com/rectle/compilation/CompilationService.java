@@ -3,6 +3,7 @@ package com.rectle.compilation;
 import com.rectle.compilation.model.Compilation;
 import com.rectle.compilation.model.Log;
 import com.rectle.exception.BusinessException;
+import com.rectle.model.entity.Model;
 import com.rectle.project.model.Project;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,25 +18,35 @@ public class CompilationService {
 	private final CompilationRepository compilationRepository;
 	private final LogRepository logRepository;
 
-	public Compilation createCompilationByProject(Project project) {
+	public Compilation createCompilationByModel(Model model) {
 		Compilation compilation = Compilation.builder()
-				.project(project)
-				.user(project.getUser())
+				.model(model)
+				.score("")
 				.build();
 		return compilationRepository.save(compilation);
 	}
 
-	public List<String> getLogsTextByCompilationId(String compilationId) {
-		Compilation compilation = compilationRepository.findById(Long.parseLong(compilationId)).orElseThrow(
+	public List<String> getLogsTextByCompilationId(Long compilationId) {
+		Compilation compilation = compilationRepository.findById(compilationId).orElseThrow(
 				() -> new BusinessException("There is no compilation with ID: " + compilationId, HttpStatus.NOT_FOUND)
 		);
 
-		return compilation.getLogs().stream().map(Log::getText).toList();
+		return compilation.getLogs()
+				.stream()
+				.map(Log::getText)
+				.toList();
+	}
+
+	public String getRunnerUrlByCompilationId(Long compilationId) {
+		Compilation compilation = compilationRepository.findById(compilationId).orElseThrow(
+				() -> new BusinessException("There is no compilation with ID: " + compilationId, HttpStatus.NOT_FOUND)
+		);
+		return compilation.getRunnerUrl();
 	}
 
 	@Transactional
-	public void addNewLogs(List<String> messages, String compilationId) {
-		Compilation compilation = compilationRepository.findById(Long.parseLong(compilationId)).orElseThrow(
+	public void addNewLogs(List<String> messages, Long compilationId) {
+		Compilation compilation = compilationRepository.findById(compilationId).orElseThrow(
 				() -> new BusinessException("There is no compilation with ID: " + compilationId, HttpStatus.NOT_FOUND)
 		);
 		messages.forEach(message -> {
@@ -45,5 +56,13 @@ public class CompilationService {
 					.build();
 			logRepository.save(log);
 		});
+	}
+
+	public void addRunnerUrl(String runnerUrl, Long compilationId) {
+		Compilation compilation = compilationRepository.findById(compilationId).orElseThrow(
+				() -> new BusinessException("There is no compilation with ID: " + compilationId, HttpStatus.NOT_FOUND)
+		);
+		compilation.setRunnerUrl(runnerUrl);
+		compilationRepository.save(compilation);
 	}
 }

@@ -13,11 +13,11 @@ docker run
 -d mysql:8 
 ```
 
-## Deploy (temporary)
+## Deploy (change version)
 ```
 docker build -t image .
-docker tag image eu.gcr.io/rectle-platform/rectle-container
-docker push eu.gcr.io/rectle-platform/rectle-container
+docker tag image europe-central2-docker.pkg.dev/rectle-app/rectle-container/rectle-service:0.0.1
+docker push europe-central2-docker.pkg.dev/rectle-app/rectle-container/rectle-service:0.0.1
 ```
 ### In case u need to authenticate use 
 * gcloud auth login 
