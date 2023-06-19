@@ -2,8 +2,11 @@ package com.rectle.project;
 
 import com.google.cloud.storage.BlobId;
 import com.rectle.compilation.CompilationService;
+import com.rectle.compilation.model.Compilation;
 import com.rectle.exception.BusinessException;
 import com.rectle.file.FilesService;
+import com.rectle.model.dto.ModelWithCompilationDto;
+import com.rectle.model.entity.Model;
 import com.rectle.project.model.Project;
 import com.rectle.team.TeamService;
 import com.rectle.team.model.Team;
@@ -13,6 +16,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -30,11 +39,26 @@ public class ProjectService {
 	private String bucketFolder;
 
 	public Project createNewProject(Project project) {
-		projectRepository.findProjectByNameAndTeam(project.getName(), project.getTeam()).ifPresent(p -> {
-			throw new BusinessException("Project with name: " + p.getName() + " already exists for team: " + p.getTeam().getName(),
-					HttpStatus.CONFLICT);
-		});
 		return projectRepository.save(project);
+	}
+
+	public List<ModelWithCompilationDto> getModelsWithCompilationsByProject(Project project) {
+		Set<Model> models = project.getModels();
+		if (models == null || models.isEmpty()) {
+			return null;
+		}
+		Set<Compilation> compilations = new HashSet<>();
+		models.forEach(model -> compilations.addAll(model.getCompilations()));
+		return compilations
+				.stream()
+				.filter(Objects::nonNull)
+				.map(compilation -> ModelWithCompilationDto
+						.builder()
+						.compilationId(compilation.getId())
+						.modelName(compilation.getModel().getName())
+						.status(compilationService.getCompilationStatus(compilation))
+						.build())
+				.collect(Collectors.toList());
 	}
 
 	public Project uploadProjectToCloudStorage(String fileName, Long teamId, MultipartFile multipartFile) {
@@ -49,18 +73,6 @@ public class ProjectService {
 		filesService.uploadZipFileToStorage(blobId, multipartFile);
 		return project;
 	}
-
-//	public String requestForCompilingProject(Project project) {
-//		//Compilation compilation = compilationService.createCompilationByProject(project);
-//
-//		ProjectToCompileDto projectToCompileDto = ProjectToCompileDto.builder()
-//				//.compilationId(compilation.getId().toString())
-//				.task(project.getId().toString())
-//				.build();
-//		filesService.compileProject(projectToCompileDto);
-//
-//		return compilation.getId().toString();
-//	}
 
 	public Project findProjectById(Long projectId) {
 		return projectRepository.findById(projectId).orElseThrow(

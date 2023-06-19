@@ -42,11 +42,6 @@ public class ModelService {
 		Project project = projectService.findProjectById(createModelDto.getProjectId());
 		User user = userService.getUserById(createModelDto.getUserId());
 
-		modelRepository.findModelByUserProjectName(user, project, createModelDto.getName()).ifPresent(model -> {
-			throw new BusinessException(MessageFormat.format("There is already model with name {0} for user {1} and project {2}",
-					model.getName(), model.getUser().getId(), model.getProject().getId()), HttpStatus.CONFLICT);
-		});
-
 		Model model = Model.builder()
 				.name(createModelDto.getName())
 				.user(user)
