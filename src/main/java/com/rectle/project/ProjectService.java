@@ -69,7 +69,7 @@ public class ProjectService {
 				.build();
 		project = createNewProject(project);
 
-		BlobId blobId = BlobId.of(bucketName, bucketFolder + project.getId() + "/code");
+		BlobId blobId = BlobId.of(bucketName, bucketFolder + project.getId() + "/code.zip");
 		filesService.uploadZipFileToStorage(blobId, multipartFile);
 		return project;
 	}

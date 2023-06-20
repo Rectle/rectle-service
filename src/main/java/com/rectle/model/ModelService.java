@@ -56,7 +56,7 @@ public class ModelService {
 				"There is no model with id: " + modelId, HttpStatus.NOT_FOUND
 		));
 		String baseFolder = bucketFolder.replace("#", model.getProject().getId().toString());
-		BlobId blobId = BlobId.of(bucketName, baseFolder + modelId + "/model");
+		BlobId blobId = BlobId.of(bucketName, baseFolder + modelId + "/model.zip");
 		filesService.uploadZipFileToStorage(blobId, multipartFile);
 		return model;
 	}

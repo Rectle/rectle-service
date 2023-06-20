@@ -30,6 +30,7 @@ public class WebSecurityConfig {
 					cors.setAllowedOrigins(List.of("*"));
 					return cors;
 				}).and().authorizeRequests()
+				.antMatchers("/api/v1/compilations/**").permitAll()
 				.anyRequest()
 				.authenticated()
 				.and()

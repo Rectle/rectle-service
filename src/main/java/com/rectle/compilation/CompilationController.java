@@ -1,12 +1,15 @@
 package com.rectle.compilation;
 
+import com.rectle.compilation.dto.LogsDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,19 +43,16 @@ public class CompilationController {
 		return new ResponseEntity<>(runner, HttpStatus.OK);
 	}
 
-	@PutMapping("/{compilationId}/logs")
-	public ResponseEntity<Void> addLogs(@PathVariable Long compilationId, @RequestParam ArrayList<String> logs) {
-		compilationService.addNewLogs(logs, compilationId);
+	@PostMapping("/{compilationId}/logs")
+	public ResponseEntity<Void> addLogs(@PathVariable Long compilationId, @RequestBody LogsDto logs) {
+		compilationService.addNewLogs(logs.getLogs(), compilationId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@PutMapping(path = "/{compilationId}/runner", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-	public Flux<String> addRunnerUrl(@PathVariable Long compilationId, @RequestParam String url) {
+	@PostMapping( "/{compilationId}/runner")
+	public ResponseEntity<Void> addRunnerUrl(@PathVariable Long compilationId, @RequestBody String url) {
 		compilationService.addRunnerUrl(url, compilationId);
-		Stream<String> stream = Stream.<String>builder()
-				.add(url)
-				.build();
-		return Flux.fromStream(stream).retry(2);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 }
