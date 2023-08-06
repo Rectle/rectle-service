@@ -37,4 +37,4 @@ rectle:
   tasks:
     service:
       url: ${RECTLE-TASKS-SERVICE-URL}
-      token: 7cdbc9084feb6ac0aa4c3d310416ec3b95de1aa8454cae6ca6f228c233a5582c
+      token: ${RECTLE-XAUTHORIZATION-TOKEN}
