@@ -1,0 +1,2 @@
+ALTER TABLE user ADD COLUMN `name` VARCHAR(100);
+ALTER TABLE project ADD COLUMN `description` VARCHAR(1000);

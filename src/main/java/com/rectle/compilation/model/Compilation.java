@@ -1,5 +1,6 @@
 package com.rectle.compilation.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rectle.model.entity.Model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,8 +47,10 @@ public class Compilation {
 
 	@ManyToOne
 	@JoinColumn(name = "model_id", nullable = false)
+	@JsonIgnore
+	@ToString.Exclude
 	private Model model;
 
-	@OneToMany(mappedBy = "compilation", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "compilation", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	private List<Log> logs = new ArrayList<>();
 }

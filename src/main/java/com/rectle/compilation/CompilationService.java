@@ -4,7 +4,6 @@ import com.rectle.compilation.model.Compilation;
 import com.rectle.compilation.model.Log;
 import com.rectle.exception.BusinessException;
 import com.rectle.model.entity.Model;
-import com.rectle.project.model.Project;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

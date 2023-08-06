@@ -11,6 +11,7 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -54,6 +55,8 @@ public class Model {
 	@ToString.Exclude
 	private Project project;
 
-	@OneToMany(mappedBy = "model")
+	@OneToMany(mappedBy = "model", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+	@ToString.Exclude
 	private Set<Compilation> compilations = new HashSet<>();
 }
