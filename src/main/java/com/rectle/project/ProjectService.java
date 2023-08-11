@@ -7,6 +7,7 @@ import com.rectle.exception.BusinessException;
 import com.rectle.file.FilesService;
 import com.rectle.model.dto.ModelWithCompilationDto;
 import com.rectle.model.entity.Model;
+import com.rectle.project.dto.CreateProjectDto;
 import com.rectle.project.model.Project;
 import com.rectle.team.TeamService;
 import com.rectle.team.model.Team;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -42,6 +44,27 @@ public class ProjectService {
 		return projectRepository.save(project);
 	}
 
+	public void deleteProject(Long projectId) {
+		Project project = findProjectById(projectId);
+		BlobId blobId = BlobId.of(bucketName, bucketFolder + project.getId() + "/code.zip");
+		if (filesService.deleteZipFileFromStorage(blobId)) {
+			projectRepository.delete(project);
+		} else {
+			log.warn(MessageFormat.format("Delete project {0} from storage FAILED, retrying..", project.getId()));
+			if (filesService.deleteZipFileFromStorage(blobId)) {
+				projectRepository.delete(project);
+				return;
+			}
+			throw new BusinessException(MessageFormat
+					.format("Something went wrong while trying to delete project: {0} files..", project.getId()),
+					HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	public List<Project> collectAll() {
+		return projectRepository.findAll();
+	}
+
 	public List<ModelWithCompilationDto> getModelsWithCompilationsByProject(Project project) {
 		Set<Model> models = project.getModels();
 		if (models == null || models.isEmpty()) {
@@ -61,17 +84,19 @@ public class ProjectService {
 				.collect(Collectors.toList());
 	}
 
-	public Project uploadProjectToCloudStorage(String fileName, Long teamId, MultipartFile multipartFile) {
-		Team team = teamService.getTeamById(teamId);
+	public Project createProject(CreateProjectDto createProjectDto) {
+		Team team = teamService.getTeamById(createProjectDto.getTeamId());
 		Project project = Project.builder()
-				.name(fileName)
+				.name(createProjectDto.getName())
+				.description(createProjectDto.getDescription())
 				.team(team)
 				.build();
-		project = createNewProject(project);
+		return createNewProject(project);
+	}
 
+	public void uploadProjectToCloudStorage(MultipartFile multipartFile, Project project) {
 		BlobId blobId = BlobId.of(bucketName, bucketFolder + project.getId() + "/code.zip");
 		filesService.uploadZipFileToStorage(blobId, multipartFile);
-		return project;
 	}
 
 	public Project findProjectById(Long projectId) {

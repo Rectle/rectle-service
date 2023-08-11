@@ -47,6 +47,8 @@ public class User {
 
 	private String email;
 
+	private String name;
+
 	@OneToMany(mappedBy = "user")
 	@JsonIgnore
 	@ToString.Exclude

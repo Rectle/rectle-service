@@ -4,7 +4,6 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.rectle.model.dto.ModelToCompileDto;
-import com.rectle.project.dto.ProjectToCompileDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,9 +29,9 @@ public class FilesService {
 		}
 	}
 
-//	public void compileProject(ProjectToCompileDto projectToCompileDto) {
-//		filesFeignClient.postForCompileFile(projectToCompileDto);
-//	}
+	public boolean deleteZipFileFromStorage(BlobId blobId) {
+		return storage.delete(blobId);
+	}
 
 	public void compileModel(ModelToCompileDto modelToCompileDto) {
 		filesFeignClient.postForCompileModel(modelToCompileDto);

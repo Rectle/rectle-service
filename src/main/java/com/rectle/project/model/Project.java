@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,13 +42,15 @@ public class Project {
 
 	private String name;
 
+	private String description;
+
 	@ManyToOne
 	@JoinColumn(name = "team_id", nullable = false)
 	@JsonIgnore
 	@ToString.Exclude
 	private Team team;
 
-	@OneToMany(mappedBy = "project")
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnore
 	@ToString.Exclude
 	private Set<Model> models = new HashSet<>();

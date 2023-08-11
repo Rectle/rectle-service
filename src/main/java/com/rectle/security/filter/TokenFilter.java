@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.TokenVerifier;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,46 +26,48 @@ import static com.google.auth.http.AuthHttpConstants.BEARER;
 
 @Slf4j
 public class TokenFilter extends OncePerRequestFilter {
+	@Value("${rectle.tasks.service.token}")
+	private String xToken;
 
-    private void verifyToken(String token) throws TokenVerifier.VerificationException {
-        TokenVerifier tokenVerifier = TokenVerifier.newBuilder().build();
-        tokenVerifier.verify(token.replace(BEARER, ""));
-    }
+	private void verifyToken(String token) throws TokenVerifier.VerificationException {
+		TokenVerifier tokenVerifier = TokenVerifier.newBuilder().build();
+		tokenVerifier.verify(token.replace(BEARER, ""));
+	}
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        if (request.getHeader("X-Authorization") != null && request.getHeader("X-Authorization").equals("7cdbc9084feb6ac0aa4c3d310416ec3b95de1aa8454cae6ca6f228c233a5582c")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
-            throw new BadCredentialsException("Authorization token is not present");
-        }
-        try {
-            verifyToken(request.getHeader(HttpHeaders.AUTHORIZATION));
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = getUserAuthentication(request);
-            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            filterChain.doFilter(request, response);
-        } catch (TokenVerifier.VerificationException e) {
-            log.warn("There was a problem with token verification", e);
-            throw new RuntimeException(e);
-        }
-    }
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
+		if (request.getHeader("X-Authorization") != null && request.getHeader("X-Authorization").equals(xToken)) {
+			filterChain.doFilter(request, response);
+			return;
+		}
+		if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
+			throw new BadCredentialsException("Authorization token is not present");
+		}
+		try {
+			verifyToken(request.getHeader(HttpHeaders.AUTHORIZATION));
+			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = getUserAuthentication(request);
+			SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+			filterChain.doFilter(request, response);
+		} catch (TokenVerifier.VerificationException e) {
+			log.warn("There was a problem with token verification", e);
+			throw new RuntimeException(e);
+		}
+	}
 
-    private UsernamePasswordAuthenticationToken getUserAuthentication(HttpServletRequest request) throws JsonProcessingException {
-        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (token == null) {
-            throw new BadCredentialsException("Authorization token is not present");
-        }
+	private UsernamePasswordAuthenticationToken getUserAuthentication(HttpServletRequest request) throws JsonProcessingException {
+		String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+		if (token == null) {
+			throw new BadCredentialsException("Authorization token is not present");
+		}
 
-        DecodedJWT jwt = JWT.decode(token.replaceFirst(BEARER, ""));
-        String payloadRaw = new String(Base64.getUrlDecoder().decode(jwt.getPayload()));
-        if (payloadRaw.isBlank()) {
-            throw new IllegalStateException("Wrong JWT token format");
-        }
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode payload = objectMapper.readTree(payloadRaw);
+		DecodedJWT jwt = JWT.decode(token.replaceFirst(BEARER, ""));
+		String payloadRaw = new String(Base64.getUrlDecoder().decode(jwt.getPayload()));
+		if (payloadRaw.isBlank()) {
+			throw new IllegalStateException("Wrong JWT token format");
+		}
+		ObjectMapper objectMapper = new ObjectMapper();
+		JsonNode payload = objectMapper.readTree(payloadRaw);
 
-        return new UsernamePasswordAuthenticationToken(payload.path("email").textValue(), null, null);
-    }
+		return new UsernamePasswordAuthenticationToken(payload.path("email").textValue(), null, null);
+	}
 }

@@ -21,11 +21,19 @@ public class UserService {
 		if (alreadyCreatedUser.isPresent()) {
 			return alreadyCreatedUser.get();
 		}
+		if (user.getName() == null ||  user.getName().equals("")) {
+			user.setName(user.getEmail());
+		}
 		Team team = Team.builder()
 				.name(user.getEmail())
 				.users(new HashSet<>())
 				.build();
 		user.addTeam(team);
+		return userRepository.save(user);
+	}
+
+	public User changeUserName(User user, String name) {
+		user.setName(name);
 		return userRepository.save(user);
 	}
 
