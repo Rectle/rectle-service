@@ -90,8 +90,17 @@ public class ProjectService {
 				.name(createProjectDto.getName())
 				.description(createProjectDto.getDescription())
 				.team(team)
+				.tags(createProjectDto.getTags())
 				.build();
 		return createNewProject(project);
+	}
+
+	public Project updateProjectTags(Project project, String newTags) {
+		if (newTags == null) {
+			throw new BusinessException("New tags are empty", HttpStatus.NO_CONTENT);
+		}
+		project.setTags(newTags);
+		return projectRepository.save(project);
 	}
 
 	public void uploadProjectToCloudStorage(MultipartFile multipartFile, Project project) {

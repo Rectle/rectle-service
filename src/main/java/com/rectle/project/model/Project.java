@@ -44,6 +44,8 @@ public class Project {
 
 	private String description;
 
+	private String tags;
+
 	@ManyToOne
 	@JoinColumn(name = "team_id", nullable = false)
 	@JsonIgnore
