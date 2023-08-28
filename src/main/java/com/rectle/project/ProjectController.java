@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -70,6 +71,12 @@ public class ProjectController {
 			return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
 		}
 		return new ResponseEntity<>(modelsWithCompilations, HttpStatus.OK);
+	}
+
+	@PutMapping("/{projectId}")
+	public ResponseEntity<Project> updateProjectTags(@PathVariable Long projectId, @RequestParam String newTags) {
+		Project project = projectService.findProjectById(projectId);
+		return new ResponseEntity<>(projectService.updateProjectTags(project, newTags), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{projectId}")

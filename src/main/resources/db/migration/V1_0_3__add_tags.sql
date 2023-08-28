@@ -1,0 +1,1 @@
+ALTER TABLE project ADD COLUMN `tags` VARCHAR(1000);
