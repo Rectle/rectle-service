@@ -36,6 +36,9 @@ public class Team {
 
 	private String name;
 
+	@Column(name = "logo_url")
+	private String logoUrl;
+
 	@Column(name = "create_date")
 	@CreationTimestamp
 	private Timestamp createDate;

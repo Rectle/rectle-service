@@ -46,6 +46,9 @@ public class Project {
 
 	private String tags;
 
+	@Column(name = "logo_url")
+	private String logoUrl;
+
 	@ManyToOne
 	@JoinColumn(name = "team_id", nullable = false)
 	@JsonIgnore

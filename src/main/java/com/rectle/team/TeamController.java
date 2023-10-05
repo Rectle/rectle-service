@@ -3,6 +3,7 @@ package com.rectle.team;
 import com.rectle.team.dto.AllTeamsDto;
 import com.rectle.team.dto.CreateTeamDto;
 import com.rectle.team.model.Team;
+import com.rectle.user.UserDtoMapper;
 import com.rectle.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -26,6 +27,7 @@ import java.util.Set;
 public class TeamController {
 	private final TeamService teamService;
 	private final TeamDtoMapper teamDtoMapper;
+	private final UserDtoMapper userDtoMapper;
 
 	@GetMapping("/{teamId}")
 	public ResponseEntity<Set<User>> getAllUsersByTeamId(@PathVariable Long teamId) {
@@ -36,6 +38,11 @@ public class TeamController {
 	@GetMapping("/users/{userId}")
 	public ResponseEntity<Set<AllTeamsDto>> getAllTeamsByUserId(@PathVariable Long userId) {
 		Set<Team> teams = teamService.getAllTeamsByUserId(userId);
+		Set<AllTeamsDto> allTeamsDtos = teamDtoMapper.teamsToAllTeamsDtos(teams);
+		allTeamsDtos.forEach(teamDto -> {
+			Set<User> users = teamService.getAllUsers(teamDto.getId());
+			teamDto.getUsers().addAll(userDtoMapper.usersToGroupsUserDtos(new ArrayList<>(users)));
+		});
 		return new ResponseEntity<>(teamDtoMapper.teamsToAllTeamsDtos(teams), HttpStatus.OK);
 	}
 

@@ -40,7 +40,7 @@ public class Compilation {
 	@CreationTimestamp
 	private Timestamp createDate;
 
-	private String score;
+	private Integer score;
 
 	@Column(name = "runner_url")
 	private String runnerUrl;
