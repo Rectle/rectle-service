@@ -1,15 +1,19 @@
 package com.rectle.team;
 
+import com.google.cloud.storage.BlobId;
 import com.rectle.exception.BusinessException;
+import com.rectle.file.FilesService;
 import com.rectle.team.dto.CreateTeamDto;
 import com.rectle.team.model.Team;
 import com.rectle.user.UserService;
 import com.rectle.user.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.Set;
 
 @Service
@@ -18,6 +22,13 @@ import java.util.Set;
 public class TeamService {
 	private final TeamRepository teamRepository;
 	private final UserService userService;
+	private final FilesService filesService;
+
+	@Value("${bucket.name}")
+	private String bucketName;
+
+	@Value("${bucket.images}")
+	private String bucketImagesFolder;
 
 	public Team getTeamByName(String name) {
 		return teamRepository.findTeamByName(name).orElseThrow(
@@ -50,6 +61,13 @@ public class TeamService {
 		Team team = Team.builder()
 				.name(createTeamDto.getName())
 				.build();
+		if (createTeamDto.getLogo() != null && !createTeamDto.getLogo().isEmpty()) {
+			team = teamRepository.save(team);
+			BlobId blobId = BlobId.of(bucketName, MessageFormat.format("{0}TeamId:{1}", bucketImagesFolder, team.getId()));
+			String logoUrl = filesService.uploadImageToStorage(blobId, createTeamDto.getLogo());
+			team.setLogoUrl(logoUrl);
+		}
+
 		return teamRepository.save(team);
 	}
 

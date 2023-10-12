@@ -1,5 +1,6 @@
 package com.rectle.user;
 
+import com.rectle.user.dto.GroupsUserDto;
 import com.rectle.user.dto.ResponseCreateUserDto;
 import com.rectle.user.dto.UserDto;
 import com.rectle.user.model.User;
@@ -17,4 +18,6 @@ public interface UserDtoMapper {
 	ResponseCreateUserDto userToResponseCreateUserDto(User user);
 
 	List<UserDto> usersToUsersDto(List<User> userList);
+
+	List<GroupsUserDto> usersToGroupsUserDtos(List<User> users);
 }

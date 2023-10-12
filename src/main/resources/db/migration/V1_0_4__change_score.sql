@@ -1,0 +1,1 @@
+ALTER TABLE compilation MODIFY COLUMN score INT NOT NULL;

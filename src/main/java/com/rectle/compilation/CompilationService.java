@@ -20,7 +20,7 @@ public class CompilationService {
 	public Compilation createCompilationByModel(Model model) {
 		Compilation compilation = Compilation.builder()
 				.model(model)
-				.score("")
+				.score(0)
 				.build();
 		return compilationRepository.save(compilation);
 	}
@@ -69,6 +69,14 @@ public class CompilationService {
 				() -> new BusinessException("There is no compilation with ID: " + compilationId, HttpStatus.NOT_FOUND)
 		);
 		compilation.setRunnerUrl(runnerUrl);
+		compilationRepository.save(compilation);
+	}
+
+	public void addScore(Long compilationId, Integer score) {
+		Compilation compilation = compilationRepository.findById(compilationId).orElseThrow(
+				() -> new BusinessException("There is no compilation with ID: " + compilationId, HttpStatus.NOT_FOUND)
+		);
+		compilation.setScore(score);
 		compilationRepository.save(compilation);
 	}
 }

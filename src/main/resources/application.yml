@@ -27,6 +27,7 @@ server:
 bucket:
   name: ${BUCKET-NAME}
   folder: ${BUCKET-FOLDER}
+  images: ${BUCKET-IMAGES}
 
 model:
   bucket:
