@@ -40,6 +40,9 @@ public class ProjectService {
 	@Value("${bucket.folder}")
 	private String bucketFolder;
 
+	@Value("${bucket.images}")
+	private String bucketImagesFolder;
+
 	public Project createNewProject(Project project) {
 		return projectRepository.save(project);
 	}
@@ -92,6 +95,12 @@ public class ProjectService {
 				.team(team)
 				.tags(createProjectDto.getTags())
 				.build();
+		if (createProjectDto.getLogo() != null && !createProjectDto.getLogo().isEmpty()) {
+			project = createNewProject(project);
+			BlobId blobId = BlobId.of(bucketName, bucketImagesFolder + project.getId());
+			String logoUrl = filesService.uploadImageToStorage(blobId, createProjectDto.getLogo());
+			project.setLogoUrl(logoUrl);
+		}
 		return createNewProject(project);
 	}
 
