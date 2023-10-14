@@ -16,8 +16,8 @@ docker run
 ## Deploy (change version)
 ```
 docker build -t image .
-docker tag image europe-central2-docker.pkg.dev/rectle-app/rectle-container/rectle-service:0.0.1
-docker push europe-central2-docker.pkg.dev/rectle-app/rectle-container/rectle-service:0.0.1
+docker tag image europe-central2-docker.pkg.dev/rectle/rectle-container/rectle-service:0.0.1
+docker push europe-central2-docker.pkg.dev/rectle/rectle-container/rectle-service:0.0.1
 ```
 ### In case u need to authenticate use 
 * gcloud auth login 

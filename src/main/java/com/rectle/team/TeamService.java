@@ -14,7 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -45,6 +47,15 @@ public class TeamService {
 	public Set<Team> getAllTeamsByUserId(Long userId) {
 		User user = userService.getUserById(userId);
 		return user.getTeams();
+	}
+
+	public List<Team> getAllTeamsInWhichUserIsNotParticipant(Long userId) {
+		User user = userService.getUserById(userId);
+		List<Team> teams = teamRepository.findAll();
+		return teams
+				.stream()
+				.filter(team -> !user.getTeams().contains(team))
+				.collect(Collectors.toList());
 	}
 
 	public Set<User> getAllUsers(Long teamId) {

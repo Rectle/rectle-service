@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -33,6 +34,12 @@ public class TeamController {
 	public ResponseEntity<Set<User>> getAllUsersByTeamId(@PathVariable Long teamId) {
 		Set<User> users = teamService.getAllUsers(teamId);
 		return new ResponseEntity<>(users, HttpStatus.OK);
+	}
+
+	@GetMapping("/users/{userId}/not-in")
+	public ResponseEntity<List<Team>> getAllTeamsUserIsNotParticipant(@PathVariable Long userId) {
+		List<Team> teams = teamService.getAllTeamsInWhichUserIsNotParticipant(userId);
+		return new ResponseEntity<>(teams, HttpStatus.OK);
 	}
 
 	@GetMapping("/users/{userId}")
