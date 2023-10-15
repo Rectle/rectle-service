@@ -1,6 +1,7 @@
 package com.rectle.compilation;
 
 import com.rectle.compilation.dto.LogsDto;
+import com.rectle.compilation.model.Compilation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -45,6 +46,16 @@ public class CompilationController {
 			return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
 		}
 		return new ResponseEntity<>(runner, HttpStatus.OK);
+	}
+
+	@Operation(summary = "Get all compilations by modelId")
+	@GetMapping("/models/{modelId}")
+	public ResponseEntity<List<Compilation>> getAllCompilationsByModelId(@PathVariable Long modelId) {
+		List<Compilation> compilations = compilationService.getAllCompilationsByModelId(modelId);
+		if (compilations == null) {
+			return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<>(compilations, HttpStatus.OK);
 	}
 
 	@Operation(summary = "Add logs by compilationId")
