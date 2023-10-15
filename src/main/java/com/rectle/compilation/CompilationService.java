@@ -79,4 +79,8 @@ public class CompilationService {
 		compilation.setScore(score);
 		compilationRepository.save(compilation);
 	}
+
+	public List<Compilation> getAllCompilationsByModelId(Long modelId) {
+		return compilationRepository.findCompilationsByModelId(modelId).orElse(null);
+	}
 }
