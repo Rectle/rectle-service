@@ -21,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.text.MessageFormat;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -73,5 +75,16 @@ public class ModelService {
 				.build();
 		filesService.compileModel(modelToCompileDto);
 		return compilation.getId();
+	}
+
+	public List<Model> getAllModelsByUserAndProject(Long userId, Long projectId) {
+		User user = userService.getUserById(userId);
+		Project project = projectService.findProjectById(projectId);
+		Optional<List<Model>> models = modelRepository.findModelsByUserProject(user, project);
+		return models.orElse(null);
+	}
+
+	public List<Model> getAll() {
+		return modelRepository.findAll();
 	}
 }

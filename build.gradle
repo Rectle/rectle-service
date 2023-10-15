@@ -27,6 +27,7 @@ ext {
     springFeignVersion = '3.0.5'
     nettySocketIoVersion = '1.7.23'
     projectReactorTest = '3.5.4'
+    swaggerVerson = '3.0.0'
 }
 
 configurations {
@@ -62,6 +63,8 @@ dependencies {
     implementation "com.google.cloud:spring-cloud-gcp-dependencies:${springGcpVersion}"
     implementation "org.springframework.cloud:spring-cloud-context:${springCloudVersion}"
     implementation "org.springframework.cloud:spring-cloud-starter-bootstrap:${springCloudVersion}"
+
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.12'
 
     implementation "org.projectlombok:lombok:$lombokVersion"
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"

@@ -4,6 +4,7 @@ import com.rectle.exception.BusinessException;
 import com.rectle.user.dto.ResponseCreateUserDto;
 import com.rectle.user.dto.UserDto;
 import com.rectle.user.model.User;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +26,14 @@ public class UserController {
 	private final UserDtoMapper userDtoMapper;
 	private final UserService userService;
 
+	@Operation(summary = "createOrLoginUser")
 	@PostMapping
 	public ResponseEntity<ResponseCreateUserDto> createOrLoginUser(@RequestBody UserDto userDto) {
 		User user = userService.createUser(userDtoMapper.userDtoToUser(userDto));
 		return new ResponseEntity<>(userDtoMapper.userToResponseCreateUserDto(user), HttpStatus.CREATED);
 	}
 
+	@Operation(summary = "getAllUsers")
 	@GetMapping
 	public ResponseEntity<List<UserDto>> getAllUsers() {
 		List<User> users = userService.getAllUsers();
@@ -40,18 +43,21 @@ public class UserController {
 		return new ResponseEntity<>(userDtoMapper.usersToUsersDto(users), HttpStatus.OK);
 	}
 
+	@Operation(summary = "getUserById")
 	@GetMapping("/{userId}")
 	public ResponseEntity<UserDto> getUserById(@PathVariable Long userId) {
 		User user = userService.getUserById(userId);
 		return new ResponseEntity<>(userDtoMapper.userToUserDto(user), HttpStatus.OK);
 	}
 
+	@Operation(summary = "getUserByEmail")
 	@GetMapping("/email")
 	public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
 		User user = userService.getUserByEmail(email);
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 
+	@Operation(summary = "changeUserName")
 	@PutMapping("/{userId}")
 	public ResponseEntity<User> changeUserName(@PathVariable Long userId, @RequestParam String name) {
 		User user = userService.getUserById(userId);

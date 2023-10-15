@@ -5,6 +5,7 @@ import com.rectle.team.dto.CreateTeamDto;
 import com.rectle.team.model.Team;
 import com.rectle.user.UserDtoMapper;
 import com.rectle.user.model.User;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,18 +31,21 @@ public class TeamController {
 	private final TeamDtoMapper teamDtoMapper;
 	private final UserDtoMapper userDtoMapper;
 
+	@Operation(summary = "getAllUsersByTeamId")
 	@GetMapping("/{teamId}")
 	public ResponseEntity<Set<User>> getAllUsersByTeamId(@PathVariable Long teamId) {
 		Set<User> users = teamService.getAllUsers(teamId);
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 
+	@Operation(summary = "getAllTeamsUserIsNotParticipant")
 	@GetMapping("/users/{userId}/not-in")
 	public ResponseEntity<List<Team>> getAllTeamsUserIsNotParticipant(@PathVariable Long userId) {
 		List<Team> teams = teamService.getAllTeamsInWhichUserIsNotParticipant(userId);
 		return new ResponseEntity<>(teams, HttpStatus.OK);
 	}
 
+	@Operation(summary = "getAllTeamsByUserId")
 	@GetMapping("/users/{userId}")
 	public ResponseEntity<Set<AllTeamsDto>> getAllTeamsByUserId(@PathVariable Long userId) {
 		Set<Team> teams = teamService.getAllTeamsByUserId(userId);
@@ -53,12 +57,14 @@ public class TeamController {
 		return new ResponseEntity<>(teamDtoMapper.teamsToAllTeamsDtos(teams), HttpStatus.OK);
 	}
 
+	@Operation(summary = "getTeamByName")
 	@GetMapping
 	public ResponseEntity<Team> getTeamByName(@RequestParam String name) {
 		Team team = teamService.getTeamByName(name);
 		return new ResponseEntity<>(team, HttpStatus.OK);
 	}
 
+	@Operation(summary = "createNewTeam")
 	@PostMapping
 	public ResponseEntity<Team> createNewTeam(@ModelAttribute CreateTeamDto teamDto) {
 		if (teamDto == null) {
@@ -68,12 +74,14 @@ public class TeamController {
 		return new ResponseEntity<>(team, HttpStatus.CREATED);
 	}
 
+	@Operation(summary = "addUserToTeam")
 	@PutMapping("/{teamId}/user/{userId}")
 	public ResponseEntity<Team> addUserToTeam(@PathVariable Long teamId, @PathVariable Long userId) {
 		Team team = teamService.addUserToTeam(teamId, userId);
 		return new ResponseEntity<>(team, HttpStatus.OK);
 	}
 
+	@Operation(summary = "removeUserFromTeam")
 	@DeleteMapping("/{teamId}/user/{userId}")
 	public ResponseEntity<Team> removeUserFromTeam(@PathVariable Long teamId, @PathVariable Long userId) {
 		Team team = teamService.removeUserFromTeam(teamId, userId);
