@@ -1,6 +1,9 @@
 package com.rectle.compilation;
 
 import com.rectle.compilation.dto.LogsDto;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.info.Info;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +19,15 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/${api.url}/compilations")
+@OpenAPIDefinition(info = @Info(
+		title = "Rectle REST API",
+		version = "1.0.0",
+		description = "Operations with Rectle REST API"
+))
 public class CompilationController {
 	private final CompilationService compilationService;
 
+	@Operation(summary = "Get logs by compilationId")
 	@GetMapping("/{compilationId}/logs")
 	public ResponseEntity<List<String>> getLogs(@PathVariable Long compilationId) {
 		List<String> logs = compilationService.getLogsTextByCompilationId(compilationId);
@@ -28,6 +37,7 @@ public class CompilationController {
 		return new ResponseEntity<>(logs, HttpStatus.OK);
 	}
 
+	@Operation(summary = "Get runnerUrl by compilationId")
 	@GetMapping("/{compilationId}/runner")
 	public ResponseEntity<String> getRunnerUrl(@PathVariable Long compilationId) {
 		String runner = compilationService.getRunnerUrlByCompilationId(compilationId);
@@ -37,18 +47,21 @@ public class CompilationController {
 		return new ResponseEntity<>(runner, HttpStatus.OK);
 	}
 
+	@Operation(summary = "Add logs by compilationId")
 	@PostMapping("/{compilationId}/logs")
 	public ResponseEntity<Void> addLogs(@PathVariable Long compilationId, @RequestBody LogsDto logs) {
 		compilationService.addNewLogs(logs.getLogs(), compilationId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
+	@Operation(summary = "Add runnerUrl by compilationId")
 	@PostMapping("/{compilationId}/runner")
 	public ResponseEntity<Void> addRunnerUrl(@PathVariable Long compilationId, @RequestBody String url) {
 		compilationService.addRunnerUrl(url, compilationId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
+	@Operation(summary = "Add score compilationId")
 	@PostMapping("/{compilationId}/score")
 	public ResponseEntity<Void> addScore(@PathVariable Long compilationId, @RequestBody Integer score) {
 		compilationService.addScore(compilationId, score);

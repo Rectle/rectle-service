@@ -5,6 +5,7 @@ import com.rectle.model.dto.ModelWithCompilationDto;
 import com.rectle.project.dto.CreateProjectDto;
 import com.rectle.project.dto.UploadedProjectDto;
 import com.rectle.project.model.Project;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ public class ProjectController {
 	private final ProjectService projectService;
 	private final ProjectDtoMapper projectDtoMapper;
 
+	@Operation(summary = "upload new Project")
 	@PostMapping("/{projectId}")
 	public ResponseEntity<UploadedProjectDto> uploadProject(@RequestParam("file") MultipartFile multipartFile, @PathVariable Long projectId) {
 		if (!multipartFile.isEmpty() && multipartFile.getOriginalFilename() != null) {
@@ -42,12 +44,14 @@ public class ProjectController {
 		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 	}
 
+	@Operation(summary = "create new Project")
 	@PostMapping
 	public ResponseEntity<Project> createProject(@ModelAttribute CreateProjectDto createProjectDto) {
 		Project project = projectService.createProject(createProjectDto);
 		return new ResponseEntity<>(project, HttpStatus.CREATED);
 	}
 
+	@Operation(summary = "getAll Projects")
 	@GetMapping
 	public ResponseEntity<List<Project>> getAllProjects() {
 		List<Project> projects = projectService.collectAll();
@@ -57,18 +61,21 @@ public class ProjectController {
 		return new ResponseEntity<>(projects, HttpStatus.OK);
 	}
 
+	@Operation(summary = "getProjectsForSpecificUser")
 	@GetMapping("/users/{userId}")
 	public ResponseEntity<List<Project>> getProjectsForSpecificUser(@PathVariable Long userId) {
 		List<Project> projectsForSpecificUser = projectService.collectAllProjectsForSpecificUser(userId);
 		return new ResponseEntity<>(projectsForSpecificUser, HttpStatus.OK);
 	}
 
+	@Operation(summary = "getProjectById")
 	@GetMapping("/{projectId}")
 	public ResponseEntity<Project> getProjectById(@PathVariable Long projectId) {
 		Project project = projectService.findProjectById(projectId);
 		return new ResponseEntity<>(project, HttpStatus.OK);
 	}
 
+	@Operation(summary = "getModelsWithCompilationsByProjectId")
 	@GetMapping("/{projectId}/models-compilations")
 	public ResponseEntity<List<ModelWithCompilationDto>> getModelsWithCompilationsByProjectId(@PathVariable Long projectId) {
 		Project project = projectService.findProjectById(projectId);
@@ -79,12 +86,14 @@ public class ProjectController {
 		return new ResponseEntity<>(modelsWithCompilations, HttpStatus.OK);
 	}
 
+	@Operation(summary = "updateProjectTags")
 	@PutMapping("/{projectId}")
 	public ResponseEntity<Project> updateProjectTags(@PathVariable Long projectId, @RequestParam String newTags) {
 		Project project = projectService.findProjectById(projectId);
 		return new ResponseEntity<>(projectService.updateProjectTags(project, newTags), HttpStatus.OK);
 	}
 
+	@Operation(summary = "deleteProjectById")
 	@DeleteMapping("/{projectId}")
 	public ResponseEntity<Boolean> deleteProjectById(@PathVariable Long projectId) {
 		projectService.deleteProject(projectId);
