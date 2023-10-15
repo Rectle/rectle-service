@@ -122,4 +122,13 @@ public class ProjectService {
 				() -> new BusinessException("Project with id: " + projectId + " not found", HttpStatus.NOT_FOUND)
 		);
 	}
+
+	public List<Project> collectAllProjectsForSpecificUser(Long userId) {
+		Set<Team> teamsForSpecificUser = teamService.getAllTeamsByUserId(userId);
+		return projectRepository
+				.findAll()
+				.stream()
+				.filter(project -> teamsForSpecificUser.contains(project.getTeam()))
+				.toList();
+	}
 }
