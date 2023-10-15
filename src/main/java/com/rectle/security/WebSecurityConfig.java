@@ -31,7 +31,6 @@ public class WebSecurityConfig {
 					return cors;
 				}).and().authorizeRequests()
 				.antMatchers("/api/v1/compilations/**").permitAll()
-				.antMatchers("/swagger-ui/**").permitAll()
 				.anyRequest()
 				.authenticated()
 				.and()
