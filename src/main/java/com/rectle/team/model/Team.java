@@ -43,6 +43,12 @@ public class Team {
 	@CreationTimestamp
 	private Timestamp createDate;
 
+	@Column(name = "join_requests")
+	private String joinRequests;
+
+	@Column(name = "pending_invites")
+	private String pendingInvites;
+
 	@ManyToMany(mappedBy = "teams")
 	@JsonIgnore
 	@ToString.Exclude

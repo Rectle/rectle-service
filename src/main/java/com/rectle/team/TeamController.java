@@ -38,6 +38,20 @@ public class TeamController {
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 
+	@Operation(summary = "getAllUsersThatWantsToJoinThisTeam")
+	@GetMapping("/{teamId}/wants-to-join")
+	public ResponseEntity<List<User>> getAllUsersThatWantsToJoinThisTeam(@PathVariable Long teamId) {
+		List<User> users = teamService.getAllUsersThatWantsToJoin(teamId);
+		return new ResponseEntity<>(users, HttpStatus.OK);
+	}
+
+	@Operation(summary = "getAllUsersThatWereInvitedToTeam")
+	@GetMapping("/{teamId}/invited")
+	public ResponseEntity<List<User>> getAllUsersThatWereInvitedToTeam(@PathVariable Long teamId) {
+		List<User> users = teamService.getAllInvitedUsers(teamId);
+		return new ResponseEntity<>(users, HttpStatus.OK);
+	}
+
 	@Operation(summary = "getAllTeamsUserIsNotParticipant")
 	@GetMapping("/users/{userId}/not-in")
 	public ResponseEntity<List<Team>> getAllTeamsUserIsNotParticipant(@PathVariable Long userId) {
@@ -53,8 +67,10 @@ public class TeamController {
 		allTeamsDtos.forEach(teamDto -> {
 			Set<User> users = teamService.getAllUsers(teamDto.getId());
 			teamDto.getUsers().addAll(userDtoMapper.usersToGroupsUserDtos(new ArrayList<>(users)));
+			teamDto.setInvited(teamService.getUsersIdsThatWereInvited(teamDto.getId()));
+			teamDto.setWantToJoin(teamService.getUsersIdsThatWantsToJoinTeam(teamDto.getId()));
 		});
-		return new ResponseEntity<>(teamDtoMapper.teamsToAllTeamsDtos(teams), HttpStatus.OK);
+		return new ResponseEntity<>(allTeamsDtos, HttpStatus.OK);
 	}
 
 	@Operation(summary = "getTeamByName")
@@ -85,6 +101,34 @@ public class TeamController {
 	@DeleteMapping("/{teamId}/user/{userId}")
 	public ResponseEntity<Team> removeUserFromTeam(@PathVariable Long teamId, @PathVariable Long userId) {
 		Team team = teamService.removeUserFromTeam(teamId, userId);
+		return new ResponseEntity<>(team, HttpStatus.OK);
+	}
+
+	@Operation(summary = "userWantsToJoin")
+	@PutMapping("/{teamId}/user/{userId}/join-request")
+	public ResponseEntity<Team> addUserToAwaitingJoiners(@PathVariable Long teamId, @PathVariable Long userId) {
+		Team team = teamService.addUserToAwaitingJoiners(teamId, userId);
+		return new ResponseEntity<>(team, HttpStatus.OK);
+	}
+
+	@Operation(summary = "removeUserFromAwaitingJoiners")
+	@DeleteMapping("/{teamId}/user/{userId}/join-request")
+	public ResponseEntity<Team> removeUserFromAwaitingJoiners(@PathVariable Long teamId, @PathVariable Long userId) {
+		Team team = teamService.removeUserFromAwaitingJoiners(teamId, userId);
+		return new ResponseEntity<>(team, HttpStatus.OK);
+	}
+
+	@Operation(summary = "addInvitedUser")
+	@PutMapping("/{teamId}/user/{userId}/invite")
+	public ResponseEntity<Team> addUserToInvitedUsers(@PathVariable Long teamId, @PathVariable Long userId) {
+		Team team = teamService.addUserToInvitedUsers(teamId, userId);
+		return new ResponseEntity<>(team, HttpStatus.OK);
+	}
+
+	@Operation(summary = "removeUserFromInvitedUsers")
+	@DeleteMapping("/{teamId}/user/{userId}/invite")
+	public ResponseEntity<Team> removeUserFromInvitedUsers(@PathVariable Long teamId, @PathVariable Long userId) {
+		Team team = teamService.removeUserFromPendingInvites(teamId, userId);
 		return new ResponseEntity<>(team, HttpStatus.OK);
 	}
 }
