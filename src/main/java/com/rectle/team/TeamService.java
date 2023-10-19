@@ -70,7 +70,10 @@ public class TeamService {
 		Team team = teamRepository.findById(teamId).orElseThrow(
 				() -> new BusinessException("There is no team with id: " + teamId, HttpStatus.NOT_FOUND)
 		);
-		String[] usersIds = getUsersIdsThatWantsToJoinTeam(teamId);
+		String[] usersIds = getUsersIdsThatWantsToJoinTeam(team.getId());
+		if (usersIds == null) {
+			return null;
+		}
 		return Arrays.stream(usersIds).map(userId -> userService.getUserById(Long.valueOf(userId))).collect(Collectors.toList());
 	}
 
@@ -78,7 +81,10 @@ public class TeamService {
 		Team team = teamRepository.findById(teamId).orElseThrow(
 				() -> new BusinessException("There is no team with id: " + teamId, HttpStatus.NOT_FOUND)
 		);
-		String[] usersIds = getUsersIdsThatWereInvited(teamId);
+		String[] usersIds = getUsersIdsThatWereInvited(team.getId());
+		if (usersIds == null) {
+			return null;
+		}
 		return Arrays.stream(usersIds).map(userId -> userService.getUserById(Long.valueOf(userId))).collect(Collectors.toList());
 	}
 
@@ -166,6 +172,9 @@ public class TeamService {
 		Team team = teamRepository.findById(teamId).orElseThrow(
 				() -> new BusinessException("There is no team with id: " + teamId, HttpStatus.NOT_FOUND)
 		);
+		if (team.getJoinRequests() == null) {
+			return null;
+		}
 		return team.getJoinRequests().split(",");
 	}
 
