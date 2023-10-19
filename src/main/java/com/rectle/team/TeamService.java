@@ -182,6 +182,9 @@ public class TeamService {
 		Team team = teamRepository.findById(teamId).orElseThrow(
 				() -> new BusinessException("There is no team with id: " + teamId, HttpStatus.NOT_FOUND)
 		);
+		if (team.getPendingInvites() == null) {
+			return null;
+		}
 		return team.getPendingInvites().split(",");
 	}
 
