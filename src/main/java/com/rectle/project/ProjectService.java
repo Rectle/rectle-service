@@ -104,6 +104,10 @@ public class ProjectService {
 		return createNewProject(project);
 	}
 
+	public boolean isProjectUploadedToStorage(Long projectId) {
+		return filesService.checkIfFileExistsInStorage(bucketName, bucketFolder + projectId + "/code.zip");
+	}
+
 	public Project updateProjectTags(Project project, String newTags) {
 		if (newTags == null) {
 			throw new BusinessException("New tags are empty", HttpStatus.NO_CONTENT);

@@ -4,6 +4,7 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageException;
 import com.rectle.model.dto.ModelToCompileDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,16 @@ public class FilesService {
 
 	public boolean deleteZipFileFromStorage(BlobId blobId) {
 		return storage.delete(blobId);
+	}
+
+	public boolean checkIfFileExistsInStorage(String bucketName, String fileName) {
+		try {
+			Blob blob = storage.get(bucketName, fileName);
+			return blob != null;
+		} catch (StorageException e) {
+			System.err.println("Error: " + e.getMessage());
+		}
+		return false;
 	}
 
 	public void compileModel(ModelToCompileDto modelToCompileDto) {
