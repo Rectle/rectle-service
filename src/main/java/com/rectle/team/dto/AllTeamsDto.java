@@ -15,4 +15,6 @@ public class AllTeamsDto {
 	private Timestamp createDate;
 	private String logoUrl;
 	private List<GroupsUserDto> users;
+	private String[] wantToJoin;
+	private String[] invited;
 }

@@ -44,6 +44,13 @@ public class ProjectController {
 		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 	}
 
+	@Operation(summary = "Is project uploaded?")
+	@GetMapping("/{projectId}/is-uploaded")
+	public ResponseEntity<Boolean> isProjectUploaded(@PathVariable Long projectId) {
+		boolean isProjectUploaded = projectService.isProjectUploadedToStorage(projectId);
+		return new ResponseEntity<>(isProjectUploaded, HttpStatus.OK);
+	}
+
 	@Operation(summary = "create new Project")
 	@PostMapping
 	public ResponseEntity<Project> createProject(@ModelAttribute CreateProjectDto createProjectDto) {
