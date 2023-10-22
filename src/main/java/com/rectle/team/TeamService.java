@@ -224,4 +224,8 @@ public class TeamService {
 		}
 		return teamRepository.save(team);
 	}
+
+	public List<Team> getAllTeams() {
+		return teamRepository.findAll();
+	}
 }

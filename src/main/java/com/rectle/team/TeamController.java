@@ -31,6 +31,13 @@ public class TeamController {
 	private final TeamDtoMapper teamDtoMapper;
 	private final UserDtoMapper userDtoMapper;
 
+	@Operation(summary = "getAllTeams")
+	@GetMapping
+	public ResponseEntity<List<Team>> getAllTeams() {
+		List<Team> teams = teamService.getAllTeams();
+		return new ResponseEntity<>(teams, HttpStatus.OK);
+	}
+
 	@Operation(summary = "getAllUsersByTeamId")
 	@GetMapping("/{teamId}")
 	public ResponseEntity<Set<User>> getAllUsersByTeamId(@PathVariable Long teamId) {
@@ -65,8 +72,6 @@ public class TeamController {
 		Set<Team> teams = teamService.getAllTeamsByUserId(userId);
 		Set<AllTeamsDto> allTeamsDtos = teamDtoMapper.teamsToAllTeamsDtos(teams);
 		allTeamsDtos.forEach(teamDto -> {
-			Set<User> users = teamService.getAllUsers(teamDto.getId());
-			teamDto.getUsers().addAll(userDtoMapper.usersToGroupsUserDtos(new ArrayList<>(users)));
 			teamDto.setInvited(teamService.getUsersIdsThatWereInvited(teamDto.getId()));
 			teamDto.setWantToJoin(teamService.getUsersIdsThatWantsToJoinTeam(teamDto.getId()));
 		});
