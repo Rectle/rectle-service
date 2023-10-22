@@ -39,7 +39,7 @@ public class TeamController {
 	}
 
 	@Operation(summary = "getAllUsersByTeamId")
-	@GetMapping("/{teamId}")
+	@GetMapping("/{teamId}/users")
 	public ResponseEntity<Set<User>> getAllUsersByTeamId(@PathVariable Long teamId) {
 		Set<User> users = teamService.getAllUsers(teamId);
 		return new ResponseEntity<>(users, HttpStatus.OK);
@@ -78,10 +78,10 @@ public class TeamController {
 		return new ResponseEntity<>(allTeamsDtos, HttpStatus.OK);
 	}
 
-	@Operation(summary = "getTeamByName")
-	@GetMapping
-	public ResponseEntity<Team> getTeamByName(@RequestParam String name) {
-		Team team = teamService.getTeamByName(name);
+	@Operation(summary = "getTeamById")
+	@GetMapping("/{teamId}")
+	public ResponseEntity<Team> getTeamById(@PathVariable Long teamId) {
+		Team team = teamService.getTeamById(teamId);
 		return new ResponseEntity<>(team, HttpStatus.OK);
 	}
 

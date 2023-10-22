@@ -33,12 +33,6 @@ public class TeamService {
 	@Value("${bucket.images}")
 	private String bucketImagesFolder;
 
-	public Team getTeamByName(String name) {
-		return teamRepository.findTeamByName(name).orElseThrow(
-				() -> new BusinessException("There is no team with name: " + name, HttpStatus.NOT_FOUND)
-		);
-	}
-
 	public Team getTeamById(Long id) {
 		return teamRepository.findById(id).orElseThrow(
 				() -> new BusinessException("There is no team with id: " + id, HttpStatus.NOT_FOUND)
