@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -102,7 +103,7 @@ public class ProjectController {
 
 	@Operation(summary = "updateProjectOverview")
 	@PutMapping("/{projectId}/overview")
-	public ResponseEntity<Project> updateProjectOverview(@PathVariable Long projectId, @RequestParam String newOverview) {
+	public ResponseEntity<Project> updateProjectOverview(@PathVariable Long projectId, @RequestBody String newOverview) {
 		Project project = projectService.findProjectById(projectId);
 		return new ResponseEntity<>(projectService.updateProjectOverview(project, newOverview), HttpStatus.OK);
 	}
