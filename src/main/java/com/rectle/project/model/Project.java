@@ -46,6 +46,8 @@ public class Project {
 
 	private String tags;
 
+	private String overview;
+
 	@Column(name = "logo_url")
 	private String logoUrl;
 

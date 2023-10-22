@@ -100,6 +100,13 @@ public class ProjectController {
 		return new ResponseEntity<>(projectService.updateProjectTags(project, newTags), HttpStatus.OK);
 	}
 
+	@Operation(summary = "updateProjectOverview")
+	@PutMapping("/{projectId}/overview")
+	public ResponseEntity<Project> updateProjectOverview(@PathVariable Long projectId, @RequestParam String newOverview) {
+		Project project = projectService.findProjectById(projectId);
+		return new ResponseEntity<>(projectService.updateProjectOverview(project, newOverview), HttpStatus.OK);
+	}
+
 	@Operation(summary = "deleteProjectById")
 	@DeleteMapping("/{projectId}")
 	public ResponseEntity<Boolean> deleteProjectById(@PathVariable Long projectId) {
