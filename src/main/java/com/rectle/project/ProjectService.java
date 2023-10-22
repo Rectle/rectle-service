@@ -116,6 +116,14 @@ public class ProjectService {
 		return projectRepository.save(project);
 	}
 
+	public Project updateProjectOverview(Project project, String newOverview) {
+		if (newOverview == null) {
+			throw new BusinessException("New overview is empty", HttpStatus.NO_CONTENT);
+		}
+		project.setOverview(newOverview);
+		return projectRepository.save(project);
+	}
+
 	public void uploadProjectToCloudStorage(MultipartFile multipartFile, Project project) {
 		BlobId blobId = BlobId.of(bucketName, bucketFolder + project.getId() + "/code.zip");
 		filesService.uploadZipFileToStorage(blobId, multipartFile);
