@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -140,7 +141,7 @@ public class TeamService {
 		if (alreadyRequested) {
 			throw new BusinessException("User: " + userId + " already requested for joining..", HttpStatus.CONFLICT);
 		}
-		team.setJoinRequests(team.getJoinRequests() + "," + userId);
+		team.setJoinRequests(team.getJoinRequests() + userId + ",");
 		return teamRepository.save(team);
 	}
 
@@ -148,18 +149,17 @@ public class TeamService {
 		Team team = teamRepository.findById(teamId).orElseThrow(
 				() -> new BusinessException("There is no team with id: " + teamId, HttpStatus.NOT_FOUND)
 		);
-		User user = userService.getUserById(userId);
 		if (team.getJoinRequests() == null || team.getJoinRequests().equals("")) {
 			team.setJoinRequests("");
 			return teamRepository.save(team);
 		}
-		boolean isUserInAwaitingJoiners = Arrays
-				.stream(team.getJoinRequests().split(","))
-				.anyMatch(id -> id.equals(user.getId().toString()));
-		if (isUserInAwaitingJoiners) {
-			team.setJoinRequests(team.getJoinRequests().replace(","+userId,""));
+		List<String> awaitingJoiners = new ArrayList<>(List.of(getUsersIdsThatWantsToJoinTeam(teamId)));
+		if (awaitingJoiners.contains(userId.toString())) {
+			awaitingJoiners.remove(userId.toString());
+			team.setJoinRequests(adjustJoinInviteString(awaitingJoiners.toString()));
+			return teamRepository.save(team);
 		}
-		return teamRepository.save(team);
+		return team;
 	}
 
 	public String[] getUsersIdsThatWantsToJoinTeam(Long teamId) {
@@ -197,7 +197,7 @@ public class TeamService {
 		if (alreadyInvited) {
 			throw new BusinessException("User: " + userId + " already invited to team..", HttpStatus.CONFLICT);
 		}
-		team.setPendingInvites(team.getPendingInvites() + "," + userId);
+		team.setPendingInvites(team.getPendingInvites() + userId + ",");
 		return teamRepository.save(team);
 	}
 
@@ -205,18 +205,21 @@ public class TeamService {
 		Team team = teamRepository.findById(teamId).orElseThrow(
 				() -> new BusinessException("There is no team with id: " + teamId, HttpStatus.NOT_FOUND)
 		);
-		User user = userService.getUserById(userId);
 		if (team.getPendingInvites() == null || team.getPendingInvites().equals("")) {
 			team.setPendingInvites("");
 			return teamRepository.save(team);
 		}
-		boolean isUserInvited = Arrays
-				.stream(team.getPendingInvites().split(","))
-				.anyMatch(id -> id.equals(user.getId().toString()));
-		if (isUserInvited) {
-			team.setPendingInvites(team.getPendingInvites().replace(","+userId,""));
+		List<String> pendingInvites = new ArrayList<>(List.of(getUsersIdsThatWereInvited(teamId)));
+		if (pendingInvites.contains(userId.toString())) {
+			pendingInvites.remove(userId.toString());
+			team.setPendingInvites(adjustJoinInviteString(pendingInvites.toString()));
+			return teamRepository.save(team);
 		}
-		return teamRepository.save(team);
+		return team;
+	}
+
+	private String adjustJoinInviteString(String joinOrInviteString) {
+		return joinOrInviteString.replace("[", "").replace("]", "").replace(" ", "");
 	}
 
 	public List<Team> getAllTeams() {

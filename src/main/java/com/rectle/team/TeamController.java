@@ -2,8 +2,8 @@ package com.rectle.team;
 
 import com.rectle.team.dto.AllTeamsDto;
 import com.rectle.team.dto.CreateTeamDto;
+import com.rectle.team.dto.JoinInviteTeamDto;
 import com.rectle.team.model.Team;
-import com.rectle.user.UserDtoMapper;
 import com.rectle.user.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +16,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -29,7 +27,6 @@ import java.util.Set;
 public class TeamController {
 	private final TeamService teamService;
 	private final TeamDtoMapper teamDtoMapper;
-	private final UserDtoMapper userDtoMapper;
 
 	@Operation(summary = "getAllTeams")
 	@GetMapping
@@ -111,29 +108,36 @@ public class TeamController {
 
 	@Operation(summary = "userWantsToJoin")
 	@PutMapping("/{teamId}/user/{userId}/join-request")
-	public ResponseEntity<Team> addUserToAwaitingJoiners(@PathVariable Long teamId, @PathVariable Long userId) {
+	public ResponseEntity<JoinInviteTeamDto> addUserToAwaitingJoiners(@PathVariable Long teamId, @PathVariable Long userId) {
 		Team team = teamService.addUserToAwaitingJoiners(teamId, userId);
-		return new ResponseEntity<>(team, HttpStatus.OK);
+		return new ResponseEntity<>(mapProperlyJoinInviteTeamDto(team), HttpStatus.OK);
 	}
 
 	@Operation(summary = "removeUserFromAwaitingJoiners")
 	@DeleteMapping("/{teamId}/user/{userId}/join-request")
-	public ResponseEntity<Team> removeUserFromAwaitingJoiners(@PathVariable Long teamId, @PathVariable Long userId) {
+	public ResponseEntity<JoinInviteTeamDto> removeUserFromAwaitingJoiners(@PathVariable Long teamId, @PathVariable Long userId) {
 		Team team = teamService.removeUserFromAwaitingJoiners(teamId, userId);
-		return new ResponseEntity<>(team, HttpStatus.OK);
+		return new ResponseEntity<>(mapProperlyJoinInviteTeamDto(team), HttpStatus.OK);
 	}
 
 	@Operation(summary = "addInvitedUser")
 	@PutMapping("/{teamId}/user/{userId}/invite")
-	public ResponseEntity<Team> addUserToInvitedUsers(@PathVariable Long teamId, @PathVariable Long userId) {
+	public ResponseEntity<JoinInviteTeamDto> addUserToInvitedUsers(@PathVariable Long teamId, @PathVariable Long userId) {
 		Team team = teamService.addUserToInvitedUsers(teamId, userId);
-		return new ResponseEntity<>(team, HttpStatus.OK);
+		return new ResponseEntity<>(mapProperlyJoinInviteTeamDto(team), HttpStatus.OK);
 	}
 
 	@Operation(summary = "removeUserFromInvitedUsers")
 	@DeleteMapping("/{teamId}/user/{userId}/invite")
-	public ResponseEntity<Team> removeUserFromInvitedUsers(@PathVariable Long teamId, @PathVariable Long userId) {
+	public ResponseEntity<JoinInviteTeamDto> removeUserFromInvitedUsers(@PathVariable Long teamId, @PathVariable Long userId) {
 		Team team = teamService.removeUserFromPendingInvites(teamId, userId);
-		return new ResponseEntity<>(team, HttpStatus.OK);
+		return new ResponseEntity<>(mapProperlyJoinInviteTeamDto(team), HttpStatus.OK);
+	}
+
+	private JoinInviteTeamDto mapProperlyJoinInviteTeamDto(Team team) {
+		JoinInviteTeamDto joinInviteTeamDto = teamDtoMapper.teamToJoinInviteTeamDto(team);
+		joinInviteTeamDto.setWantToJoin(teamService.getUsersIdsThatWantsToJoinTeam(team.getId()));
+		joinInviteTeamDto.setInvited(teamService.getUsersIdsThatWereInvited(team.getId()));
+		return joinInviteTeamDto;
 	}
 }
