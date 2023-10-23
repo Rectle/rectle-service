@@ -3,6 +3,7 @@ package com.rectle.project;
 import com.rectle.file.FilesUtils;
 import com.rectle.model.dto.ModelWithCompilationDto;
 import com.rectle.project.dto.CreateProjectDto;
+import com.rectle.project.dto.ProjectOverviewDto;
 import com.rectle.project.dto.UploadedProjectDto;
 import com.rectle.project.model.Project;
 import io.swagger.v3.oas.annotations.Operation;
@@ -103,9 +104,9 @@ public class ProjectController {
 
 	@Operation(summary = "updateProjectOverview")
 	@PutMapping("/{projectId}/overview")
-	public ResponseEntity<Project> updateProjectOverview(@PathVariable Long projectId, @RequestBody String newOverview) {
+	public ResponseEntity<Project> updateProjectOverview(@PathVariable Long projectId, @RequestBody ProjectOverviewDto newOverview) {
 		Project project = projectService.findProjectById(projectId);
-		return new ResponseEntity<>(projectService.updateProjectOverview(project, newOverview), HttpStatus.OK);
+		return new ResponseEntity<>(projectService.updateProjectOverview(project, newOverview.getNewOverview()), HttpStatus.OK);
 	}
 
 	@Operation(summary = "deleteProjectById")
