@@ -109,6 +109,7 @@ public class TeamService {
 			throw new BusinessException(
 					"Team with id: " + teamId + " already has user with id: " + userId, HttpStatus.CONFLICT);
 		}
+		team = removeUserFromPendingInvites(teamId, userId);
 		userService.addUserToTeam(user, team);
 		return team;
 	}
@@ -166,8 +167,8 @@ public class TeamService {
 		Team team = teamRepository.findById(teamId).orElseThrow(
 				() -> new BusinessException("There is no team with id: " + teamId, HttpStatus.NOT_FOUND)
 		);
-		if (team.getJoinRequests() == null) {
-			return null;
+		if (team.getJoinRequests() == null || team.getJoinRequests().equals("")) {
+			return new String[]{};
 		}
 		return team.getJoinRequests().split(",");
 	}
@@ -176,8 +177,8 @@ public class TeamService {
 		Team team = teamRepository.findById(teamId).orElseThrow(
 				() -> new BusinessException("There is no team with id: " + teamId, HttpStatus.NOT_FOUND)
 		);
-		if (team.getPendingInvites() == null) {
-			return null;
+		if (team.getPendingInvites() == null || team.getPendingInvites().equals("")) {
+			return new String[]{};
 		}
 		return team.getPendingInvites().split(",");
 	}
