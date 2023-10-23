@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +54,19 @@ public class FilesService {
 			System.err.println("Error: " + e.getMessage());
 		}
 		return false;
+	}
+
+	public String getFileUrl(String bucketName, String fileName) {
+		if (checkIfFileExistsInStorage(bucketName, fileName)) {
+			try {
+				Blob blob = storage.get(bucketName, fileName);
+				return blob.getMediaLink();
+			} catch (StorageException e) {
+				System.err.println("Error: " + e.getMessage());
+			}
+		}
+		log.info(MessageFormat.format("File: {0} doesn't exist in storage..", fileName));
+		return null;
 	}
 
 	public void compileModel(ModelToCompileDto modelToCompileDto) {

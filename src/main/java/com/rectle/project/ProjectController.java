@@ -53,6 +53,13 @@ public class ProjectController {
 		return new ResponseEntity<>(isProjectUploaded, HttpStatus.OK);
 	}
 
+	@Operation(summary = "downloadProjectCode")
+	@GetMapping("/{projectId}/download")
+	public ResponseEntity<String> downloadProjectCode(@PathVariable Long projectId) {
+		String projectFileUrl = projectService.getProjectFileUrl(projectId);
+		return new ResponseEntity<>(projectFileUrl, HttpStatus.OK);
+	}
+
 	@Operation(summary = "create new Project")
 	@PostMapping
 	public ResponseEntity<Project> createProject(@ModelAttribute CreateProjectDto createProjectDto) {

@@ -108,6 +108,10 @@ public class ProjectService {
 		return filesService.checkIfFileExistsInStorage(bucketName, bucketFolder + projectId + "/code.zip");
 	}
 
+	public String getProjectFileUrl(Long projectId) {
+		return filesService.getFileUrl(bucketName, bucketFolder + projectId + "/code.zip");
+	}
+
 	public Project updateProjectTags(Project project, String newTags) {
 		if (newTags == null) {
 			throw new BusinessException("New tags are empty", HttpStatus.NO_CONTENT);
