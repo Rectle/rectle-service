@@ -6,10 +6,12 @@ import com.rectle.compilation.model.Compilation;
 import com.rectle.exception.BusinessException;
 import com.rectle.file.FilesService;
 import com.rectle.model.dto.CreateModelDto;
+import com.rectle.model.dto.ModelCompetitionDto;
 import com.rectle.model.dto.ModelToCompileDto;
 import com.rectle.model.entity.Model;
 import com.rectle.project.ProjectService;
 import com.rectle.project.model.Project;
+import com.rectle.user.UserDtoMapper;
 import com.rectle.user.UserService;
 import com.rectle.user.model.User;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +21,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -33,6 +36,7 @@ public class ModelService {
 	private final ProjectService projectService;
 	private final FilesService filesService;
 	private final CompilationService compilationService;
+	private final UserDtoMapper userDtoMapper;
 
 	@Value("${model.bucket.name}")
 	private String bucketName;
@@ -65,7 +69,7 @@ public class ModelService {
 
 	public Long compileModel(Long modelId) {
 		Model model = modelRepository.findById(modelId).orElseThrow(() ->
-			new BusinessException("There is no model with id: " + modelId, HttpStatus.NOT_FOUND)
+				new BusinessException("There is no model with id: " + modelId, HttpStatus.NOT_FOUND)
 		);
 		Compilation compilation = compilationService.createCompilationByModel(model);
 		ModelToCompileDto modelToCompileDto = ModelToCompileDto.builder()
@@ -82,6 +86,22 @@ public class ModelService {
 		Project project = projectService.findProjectById(projectId);
 		Optional<List<Model>> models = modelRepository.findModelsByUserProject(user, project);
 		return models.orElse(null);
+	}
+
+	public List<ModelCompetitionDto> getAllModelsCompetitionsForProject(Long projectId) {
+		Project project = projectService.findProjectById(projectId);
+		Set<Model> models = project.getModels();
+		return models
+				.stream()
+				.map(model -> ModelCompetitionDto
+						.builder()
+						.createDate(model.getCreateDate())
+						.name(model.getName())
+						.resourceUrl(filesService.getFileUrl(bucketName, bucketFolder.replace("#", projectId.toString()) + model.getId() + "/model.zip"))
+						.user(userDtoMapper.userToUserDto(model.getUser()))
+						.compilations(compilationService.getAllCompilationsCompetitionByModelId(model.getId()))
+						.build())
+				.collect(Collectors.toList());
 	}
 
 	public List<Model> getAll() {

@@ -2,6 +2,7 @@ package com.rectle.model;
 
 import com.rectle.file.FilesUtils;
 import com.rectle.model.dto.CreateModelDto;
+import com.rectle.model.dto.ModelCompetitionDto;
 import com.rectle.model.entity.Model;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -74,6 +75,16 @@ public class ModelController {
 			return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
 		}
 		return new ResponseEntity<>(models, HttpStatus.OK);
+	}
+
+	@Operation(summary = "getAllModelsCompetitionsByProjectId")
+	@GetMapping("/projects/{projectId}")
+	public ResponseEntity<List<ModelCompetitionDto>> getAllModelsCompetitionsByProjectId(@PathVariable Long projectId) {
+		List<ModelCompetitionDto> modelCompetitionDtos = modelService.getAllModelsCompetitionsForProject(projectId);
+		if (modelCompetitionDtos == null) {
+			return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<>(modelCompetitionDtos, HttpStatus.OK);
 	}
 
 }

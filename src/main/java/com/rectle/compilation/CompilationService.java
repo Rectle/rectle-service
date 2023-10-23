@@ -1,5 +1,6 @@
 package com.rectle.compilation;
 
+import com.rectle.compilation.dto.CompilationCompetitionDto;
 import com.rectle.compilation.model.Compilation;
 import com.rectle.compilation.model.Log;
 import com.rectle.exception.BusinessException;
@@ -9,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -82,5 +85,16 @@ public class CompilationService {
 
 	public List<Compilation> getAllCompilationsByModelId(Long modelId) {
 		return compilationRepository.findCompilationsByModelId(modelId).orElse(null);
+	}
+
+	public List<CompilationCompetitionDto> getAllCompilationsCompetitionByModelId(Long modelId) {
+		List<Compilation> compilations = getAllCompilationsByModelId(modelId);
+		if (compilations == null) {
+			compilations = new ArrayList<>();
+		}
+		return compilations
+				.stream()
+				.map(compilation -> new CompilationCompetitionDto(compilation.getScore(), compilation.getCreateDate()))
+				.collect(Collectors.toList());
 	}
 }
